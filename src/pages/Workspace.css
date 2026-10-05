@@ -1,0 +1,58 @@
+#performance .dashboard {
+  max-width: 1360px;
+  margin: auto;
+  padding: 40px 5%;
+}
+#performance .dashhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+#performance .dashhead h1 { margin-top: 12px; }
+#performance .statgrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+#performance .statgrid .card { padding: 22px; }
+#performance .number { margin: 8px 0; font-size: 34px; font-weight: 700; }
+#performance .number span { font-size: 22px; }
+#performance .lime { color: var(--accent); }
+#performance .dashbody {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 24px;
+}
+#performance .chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 13px;
+  height: 210px;
+  margin: 26px 0;
+  border-bottom: 1px solid var(--border);
+}
+#performance .bar {
+  position: relative;
+  flex: 1;
+  background: #668452;
+  border-radius: 5px 5px 0 0;
+}
+#performance .bar:nth-child(even) { background: var(--accent); }
+#performance .bar small {
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--muted);
+}
+#performance .chart-summary { margin-top: 40px; }
+@media (max-width: 760px) {
+  #performance .dashboard { padding: 24px 5%; }
+  #performance .dashhead { flex-direction: column; align-items: flex-start; gap: 16px; }
+  #performance .statgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  #performance .statgrid .card { padding: 16px; }
+  #performance .dashbody { grid-template-columns: 1fr; }
+  #performance .chart { gap: 8px; }
+}

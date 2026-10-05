@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Link, NavLink, Routes, Route, Navigate } from "react-router";
+import Workspace from "./pages/workspace";
 
 export default function App() {
   const [users, setUsers] = useState([]);
@@ -55,39 +57,40 @@ export default function App() {
     <>
       <div className="fitness-backdrop" aria-hidden="true"></div>
       <header className="topbar">
-        <a className="logo" href="#community">
+        <Link className="logo" to="/posts">
           MyCoach
           <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
-        </a>
+        </Link>
         <div className="toplinks">
-          <a href="#community">Your community</a>
-          <button className="btn outline" data-go="wellness">Find a coach</button>
+          <Link to="/posts">Your community</Link>
+          <Link className="btn outline" to="/coaches">Find a coach</Link>
           <span className="avatar" aria-label="Alex profile">AL</span>
         </div>
       </header>
       <header className="switcher">
-        <nav role="tablist" aria-label="Design concepts">
-          <button id="tab-community" role="tab" aria-controls="community" aria-selected="true" data-view="community">Community</button>
-          <button id="tab-wellness" role="tab" aria-controls="wellness" aria-selected="false" data-view="wellness">Coaches</button>
-          <button id="tab-performance" role="tab" aria-controls="performance" aria-selected="false" data-view="performance">Workspace</button>
+        <nav aria-label="Main navigation">
+          <NavLink to="/posts" className={({ isActive }) => isActive ? "selected" : ""}>Community</NavLink>
+          <NavLink to="/coaches" className={({ isActive }) => isActive ? "selected" : ""}>Coaches</NavLink>
+          <NavLink to="/workspace" className={({ isActive }) => isActive ? "selected" : ""}>Workspace</NavLink>
         </nav>
         <nav className="application-links" aria-label="Application navigation">
-          <a href="#/posts">Post catalog</a>
-          <a href="#/coaches">Coach catalog</a>
-          <a href="#/my-posts">My posts</a>
-          <a href="#/posts/new">Create post</a>
+          <Link to="/my-posts">My posts</Link>
+          <Link className="nav-cta" to="/posts/new">Create post</Link>
         </nav>
         <div id="authlinks"></div>
       </header>
-      <section id="community" className="concept dark active" role="tabpanel" aria-labelledby="tab-community">
+      <Routes>
+        <Route path="/" element={<Navigate to="/posts" replace />} />
+        <Route path="/posts" element={
+      <section id="community" className="concept dark active">
 
         <div className="layout">
           <aside className="sidebar">
             <nav aria-label="Community navigation">
-              <button className="selected" data-feed="all">◉ Your feed</button>
-              <button data-feed="following">▤ My posts</button>
-              <button data-go="wellness">↗ Explore coaches</button>
-              <button data-go="performance">▤ Coach workspace</button>
+              <Link className="selected" to="/posts">◉ Your feed</Link>
+              <Link to="/my-posts">▤ My posts</Link>
+              <Link to="/coaches">↗ Explore coaches</Link>
+              <Link to="/workspace">▤ Coach workspace</Link>
             </nav>
             <div className="note">
               <span className="sub">A little every day</span>
@@ -117,8 +120,8 @@ export default function App() {
               </div>
             </form>
             <div className="wrapactions">
-              <a className="btn" href="#/posts/new">+ Share a new post</a>
-              <a className="btn outline" href="#/my-posts">My posts</a>
+              <Link className="btn" to="/posts/new">+ Share a new post</Link>
+              <Link className="btn outline" to="/my-posts">My posts</Link>
             </div>
             <div id="newposts">
               <h2>Community members</h2>
@@ -241,20 +244,22 @@ export default function App() {
                 </div>
                 <button className="follow" aria-pressed="false">+</button>
               </div>
-              <button className="btn outline" data-go="wellness" style={{"width": "100%"}}>Explore all coaches ↗</button>
+              <Link className="btn outline" to="/coaches" style={{"width": "100%"}}>Explore all coaches ↗</Link>
             </div>
             <p className="muted">Built around people. Powered by progress.</p>
           </aside>
         </div>
       </section>
-      <section id="wellness" className="concept dark" role="tabpanel" aria-labelledby="tab-wellness">
+        } />
+        <Route path="/coaches" element={
+      <section id="wellness" className="concept dark active">
         <header className="topbar">
-          <a href="#wellness" className="logo">
+          <Link to="/coaches" className="logo">
             MyCoach
             <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
-          </a>
+          </Link>
           <div className="toplinks">
-            <button className="outline btn" data-go="community">Community</button>
+            <Link className="outline btn" to="/posts">Community</Link>
             <span className="avatar">AL</span>
           </div>
         </header>
@@ -320,171 +325,16 @@ export default function App() {
           {!loading && !error && coaches.length === 0 && <p className="muted">No coaches found.</p>}
         </main>
       </section>
-      <section id="performance" className="concept dark" role="tabpanel" aria-labelledby="tab-performance">
-        <header className="topbar">
-          <a href="#performance" className="logo">
-            MyCoach
-            <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
-          </a>
-          <div className="toplinks">
-            <span className="muted">COACH WORKSPACE</span>
-            <button className="btn" data-go="community">Community ↗</button>
-            <span className="avatar">SK</span>
-          </div>
-        </header>
-        <main className="dashboard">
-          <div className="dashhead">
-            <div>
-              <span className="sub lime">Wednesday, 14 October · sample data</span>
-              <h1 style={{"marginTop": "12px"}}>Make progress personal.</h1>
-              <span className="muted">Welcome back, Sarah. Here’s how your team is doing.</span>
-            </div>
-            <button className="btn" id="invite">+ Invite a client</button>
-          </div>
-          <div className="statgrid">
-            <div className="card">
-              <span className="muted">Active clients</span>
-              <div className="number">24</div>
-              <span className="lime">↑ 3 this month</span>
-            </div>
-            <div className="card">
-              <span className="muted">Weekly adherence</span>
-              <div className="number">
-                87
-                <span style={{"fontSize": "22px"}}>%</span>
-              </div>
-              <span className="lime">↑ 8% vs last week</span>
-            </div>
-            <div className="card">
-              <span className="muted">Sessions this week</span>
-              <div className="number">18</div>
-              <span className="muted">4 remaining</span>
-            </div>
-            <div className="card">
-              <span className="muted">Awaiting review</span>
-              <div className="number" id="reviewcount">3</div>
-              <span className="muted">Client check-ins</span>
-            </div>
-          </div>
-          <div className="dashbody">
-            <div>
-              <section className="card">
-                <div className="sectionhead">
-                  <div>
-                    <span className="sub lime">The bigger picture</span>
-                    <h2>Consistency is climbing.</h2>
-                  </div>
-                  <span className="pill">This week</span>
-                </div>
-                <span className="muted">Completed sessions across your clients</span>
-                <div className="chart" role="img" aria-label="Completed sessions: Monday 12, Tuesday 18, Wednesday 14, Thursday 22, Friday 19, Saturday 26, Sunday 16">
-                  <div className="bar" style={{"height": "46%"}}>
-                    <small>Mon</small>
-                  </div>
-                  <div className="bar" style={{"height": "69%"}}>
-                    <small>Tue</small>
-                  </div>
-                  <div className="bar" style={{"height": "54%"}}>
-                    <small>Wed</small>
-                  </div>
-                  <div className="bar" style={{"height": "85%"}}>
-                    <small>Thu</small>
-                  </div>
-                  <div className="bar" style={{"height": "73%"}}>
-                    <small>Fri</small>
-                  </div>
-                  <div className="bar" style={{"height": "100%"}}>
-                    <small>Sat</small>
-                  </div>
-                  <div className="bar" style={{"height": "62%"}}>
-                    <small>Sun</small>
-                  </div>
-                </div>
-                <p className="muted" style={{"marginTop": "40px"}}>127 sessions completed · 87% of planned sessions</p>
-              </section>
-              <section className="card">
-                <div className="sectionhead">
-                  <h2>Client check-ins</h2>
-                  <span className="muted">Your attention makes a difference</span>
-                </div>
-                <div className="checkin">
-                  <div className="person">
-                    <span className="avatar">AL</span>
-                    <div>
-                      <b>Alex Lewis</b>
-                      <p className="muted">“Feeling stronger. Ready for the next step.”</p>
-                    </div>
-                  </div>
-                  <button className="btn review" data-client="Alex Lewis">Review</button>
-                </div>
-                <div className="checkin">
-                  <div className="person">
-                    <span className="avatar">MR</span>
-                    <div>
-                      <b>Marcus Reed</b>
-                      <p className="muted">“Hit my first 5K this week!”</p>
-                    </div>
-                  </div>
-                  <button className="btn review" data-client="Marcus Reed">Review</button>
-                </div>
-                <div className="checkin">
-                  <div className="person">
-                    <span className="avatar">NP</span>
-                    <div>
-                      <b>Nina Patel</b>
-                      <p className="muted">“Could use help with my evening routine.”</p>
-                    </div>
-                  </div>
-                  <button className="btn review" data-client="Nina Patel">Review</button>
-                </div>
-              </section>
-            </div>
-            <aside>
-              <section className="card">
-                <span className="sub lime">Your schedule</span>
-                <h2 style={{"marginTop": "10px"}}>Today’s lineup</h2>
-                <div className="event">
-                  <span className="time">09:00</span>
-                  <div>
-                    <b>Strength session</b>
-                    <br />
-                    <span className="muted">Alex Lewis · 45 min · Online</span>
-                  </div>
-                </div>
-                <div className="event">
-                  <span className="time">11:30</span>
-                  <div>
-                    <b>Progress conversation</b>
-                    <br />
-                    <span className="muted">Nina Patel · 30 min · Online</span>
-                  </div>
-                </div>
-                <div className="event">
-                  <span className="time">16:00</span>
-                  <div>
-                    <b>Mobility &amp; recovery</b>
-                    <br />
-                    <span className="muted">Marcus Reed · 45 min · Online</span>
-                  </div>
-                </div>
-              </section>
-              <section className="card" style={{"background": "#c7f27a", "color": "#1b2919"}}>
-                <span className="sub">Community highlight</span>
-                <h2 style={{"marginTop": "18px"}}>
-                  A small win.
-                  <br />
-                  A big impact.
-                </h2>
-                <p>Marcus completed his first 5K. Take a moment to celebrate the work behind it.</p>
-                <button className="btn" style={{"background": "#1b2919", "color": "white"}} data-go="community">Cheer him on ↗</button>
-              </section>
-            </aside>
-          </div>
-        </main>
-      </section>
-      <section id="exam-page" className="concept dark">
-        <main id="routecontent" className="page"></main>
-      </section>
+        } />
+        <Route path="/workspace" element={<Workspace />} />
+        <Route path="*" element={
+          <main className="page">
+            <h1>This page is not built yet.</h1>
+            <p className="muted">You can add its component and route as you build the project.</p>
+            <Link className="btn" to="/posts">Back to community</Link>
+          </main>
+        } />
+      </Routes>
       <footer className="demo">MyCoach · HTML prototype · Sample data and simulated sign-in only. Connect React to a hosted backend for the exam.</footer>
       <div className="notice" role="status" aria-live="polite"></div>
       <dialog className="modal" id="details">
