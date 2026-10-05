@@ -12,9 +12,7 @@ export default function App() {
       "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=first_name,last_name,role,specialization,hourly_rate,fitness_goals,img_url,location",
       {
         headers: {
-          
-          {/* TO DO export apikey */}
-          apikey: "",
+          apikey: import.meta.env.VITE_API_KEY,
         },
         signal: controller.signal,
       }
