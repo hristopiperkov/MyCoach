@@ -12,7 +12,9 @@ export default function App() {
       "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=first_name,last_name,role,specialization,hourly_rate,fitness_goals,img_url,location",
       {
         headers: {
-          apikey: "sb_publishable_-IvrLhxd_oVx-WaZZkFWwA_0H-FH-Vj",
+          
+          {/* TO DO export apikey */}
+          apikey: "",
         },
         signal: controller.signal,
       }
