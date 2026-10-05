@@ -59,3 +59,68 @@ button:disabled{opacity:.65;cursor:default}
 .concept.dark,#wellness{background:transparent}
 @media(max-width:760px){.fitness-backdrop{opacity:.3;background-position:center}}
 
+
+
+.switcher {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.switcher > nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: auto;
+}
+
+.switcher .application-links {
+  margin-left: auto;
+}
+
+.application-links a {
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 7px;
+  white-space: nowrap;
+}
+
+.application-links a:hover {
+  color: var(--accent);
+  background: var(--surface-raised);
+}
+
+.switcher #authlinks:empty {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .switcher .application-links {
+    margin-left: 0;
+  }
+}
+
+
+header.topbar {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+header.switcher {
+  position: relative;
+  z-index: 2;
+  background: #161b24;
+}
+
+header.topbar .avatar {
+  background: #394251;
+  color: #ecf2e8;
+}

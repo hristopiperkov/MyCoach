@@ -12,7 +12,7 @@ export default function App() {
       "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=first_name,last_name,role,specialization,hourly_rate,fitness_goals,img_url,location",
       {
         headers: {
-          apikey: import.meta.env.VITE_API_KEY,
+          apikey: "sb_publishable_-IvrLhxd_oVx-WaZZkFWwA_0H-FH-Vj",
         },
         signal: controller.signal,
       }
@@ -54,38 +54,33 @@ export default function App() {
   return (
     <>
       <div className="fitness-backdrop" aria-hidden="true"></div>
-      <header className="switcher">
-        <div>
-          <b>MyCoach</b>
-          <small> / HTML prototype</small>
+      <header className="topbar">
+        <a className="logo" href="#community">
+          MyCoach
+          <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
+        </a>
+        <div className="toplinks">
+          <a href="#community">Your community</a>
+          <button className="btn outline" data-go="wellness">Find a coach</button>
+          <span className="avatar" aria-label="Alex profile">AL</span>
         </div>
+      </header>
+      <header className="switcher">
         <nav role="tablist" aria-label="Design concepts">
           <button id="tab-community" role="tab" aria-controls="community" aria-selected="true" data-view="community">Community</button>
           <button id="tab-wellness" role="tab" aria-controls="wellness" aria-selected="false" data-view="wellness">Coaches</button>
           <button id="tab-performance" role="tab" aria-controls="performance" aria-selected="false" data-view="performance">Workspace</button>
         </nav>
-      </header>
-      <div className="appnav">
-        <nav aria-label="Application navigation">
+        <nav className="application-links" aria-label="Application navigation">
           <a href="#/posts">Post catalog</a>
           <a href="#/coaches">Coach catalog</a>
           <a href="#/my-posts">My posts</a>
           <a href="#/posts/new">Create post</a>
         </nav>
         <div id="authlinks"></div>
-      </div>
+      </header>
       <section id="community" className="concept dark active" role="tabpanel" aria-labelledby="tab-community">
-        <header className="topbar">
-          <a className="logo" href="#community">
-            MyCoach
-            <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
-          </a>
-          <div className="toplinks">
-            <a href="#community">Your community</a>
-            <button className="btn outline" data-go="wellness">Find a coach</button>
-            <span className="avatar" aria-label="Alex profile">AL</span>
-          </div>
-        </header>
+
         <div className="layout">
           <aside className="sidebar">
             <nav aria-label="Community navigation">
