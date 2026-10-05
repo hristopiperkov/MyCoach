@@ -14,7 +14,7 @@ export default function App() {
       "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=first_name,last_name,role,specialization,hourly_rate,fitness_goals,img_url,location",
       {
         headers: {
-          apikey: "sb_publishable_-IvrLhxd_oVx-WaZZkFWwA_0H-FH-Vj",
+          apikey: import.meta.env.VITE_API_KEY,
         },
         signal: controller.signal,
       }
@@ -152,7 +152,9 @@ export default function App() {
             </div>
             <article className="card feedpost" hidden data-followed="true">
               <div className="person">
-                <span className="avatar">SK</span>
+                    <span className="avatar" aria-label="Sarah Kim profile">
+                      SK
+                    </span>
                 <div>
                   <b>Sarah Kim</b>
                   <span className="pill">Coach</span>
