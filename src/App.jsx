@@ -307,9 +307,15 @@ export default function App() {
             {!loading && !error && coaches.map((coach, index) => (
               <article className="profile" key={`${coach.first_name}-${coach.last_name}-${index}`}>
                 {coach.img_url ? (
-                  <img src={coach.img_url} alt={`${coach.first_name} ${coach.last_name}`} style={{ width: "100%", height: "170px", objectFit: "cover", display: "block" }} />
+                  <img
+                    className="avatar"
+                    src={coach.img_url}
+                    alt={`${coach.first_name} ${coach.last_name}`}
+                  />
                 ) : (
-                  <div className="portrait">{coach.first_name?.[0]}{coach.last_name?.[0]}</div>
+                  <span className="avatar">
+                    {coach.first_name?.[0]}{coach.last_name?.[0]}
+                  </span>
                 )}
                 <div className="body">
                   <span className="pill">{coach.role}</span>
