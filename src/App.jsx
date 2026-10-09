@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 
 import Header from "./components/header/Header";
 import Navigation from "./components/navigation/Navigation";
@@ -8,6 +8,7 @@ import CoachCatalog from "./components/coach-catalog/CoachCatalog";
 import Workspace from "./components/coach-workspace/Workspace";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
+import PageNotFound from "./components/page-not-found/PageNotFound";
 
 export default function App() {
   const [users, setUsers] = useState([]);
@@ -96,21 +97,7 @@ export default function App() {
         <Route path="/workspace" element={<Workspace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        <Route
-          path="*"
-          element={
-            <main className="page">
-              <h1>This page is not built yet.</h1>
-              <p className="muted">
-                You can add its component and route as you build the project.
-              </p>
-              <Link className="btn" to="/posts">
-                Back to community
-              </Link>
-            </main>
-          }
-        />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
 
       <footer className="demo">MyCoach · University project</footer>
@@ -120,6 +107,7 @@ export default function App() {
       <dialog className="modal" id="details">
         <h2 id="dialogtitle"></h2>
         <div id="dialogbody"></div>
+
         <button
           className="btn outline"
           id="closemodal"
