@@ -1,7 +1,9 @@
+import { Link } from "react-router";
+
 export default function Header() {
     return (
         <header className="topbar">
-        <Link className="logo" to="/posts">
+        <Link className="logo" to="/">
           MyCoach
           <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
         </Link>

@@ -1,4 +1,6 @@
-export default function CoachCatalog() {
+import { Link } from "react-router";
+
+export default function CoachCatalog({ coaches, loading, error }) {
     return (
         <section id="wellness" className="concept dark active">
         <header className="topbar">

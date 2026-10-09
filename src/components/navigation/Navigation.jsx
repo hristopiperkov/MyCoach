@@ -1,3 +1,5 @@
+import { Link, NavLink } from "react-router";
+
 export default function Navigation() {
     return (
         <header className="switcher">

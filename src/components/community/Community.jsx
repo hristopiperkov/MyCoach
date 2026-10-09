@@ -1,4 +1,6 @@
-export default function Community({ users, coaches, loading, error }) {
+import { Link } from "react-router";
+
+export default function Community({ users, loading, error }) {
     return (
         <section id="community" className="concept dark active">
 
