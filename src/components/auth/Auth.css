@@ -1,0 +1,71 @@
+.mycoach-auth {
+  position: relative;
+  width: 100%;
+  padding: 40px 20px;
+  color: var(--text, #f3f5f7);
+}
+
+.mycoach-auth__form {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 32px;
+  background: var(--surface, #1b202b);
+  border: 1px solid var(--border, #3b4352);
+  border-radius: 14px;
+}
+
+.mycoach-auth__eyebrow {
+  color: var(--accent, #c7f27a);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.mycoach-auth h1 { margin: 12px 0; font-size: 30px; }
+.mycoach-auth__intro { color: var(--muted, #acb6c6); margin-bottom: 24px; }
+.mycoach-auth label { display: block; margin: 16px 0 8px; font-weight: 600; }
+
+.mycoach-auth input,
+.mycoach-auth select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 12px;
+  border: 1px solid var(--border, #3b4352);
+  border-radius: 8px;
+  background: var(--bg, #11151d);
+  color: var(--text, #f3f5f7);
+  font: inherit;
+}
+
+.mycoach-auth input::placeholder { color: var(--muted, #acb6c6); }
+.mycoach-auth__names { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.mycoach-auth__names > div { min-width: 0; }
+.mycoach-auth__help { display: block; margin-top: 8px; color: var(--muted, #acb6c6); }
+
+.mycoach-auth__submit {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 24px;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent, #c7f27a);
+  color: var(--accent-ink, #192418);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mycoach-auth__submit:hover { filter: brightness(1.08); }
+.mycoach-auth__footer { margin: 20px 0 0; color: var(--muted, #acb6c6); text-align: center; }
+.mycoach-auth__footer a { color: var(--accent, #c7f27a); text-decoration: underline; }
+.mycoach-auth :is(input, select, button, a):focus-visible { outline: 2px solid var(--accent, #c7f27a); outline-offset: 3px; }
+
+@media (max-width: 480px) {
+  .mycoach-auth { padding: 24px 12px; }
+  .mycoach-auth__form { padding: 24px 18px; }
+  .mycoach-auth__names { grid-template-columns: 1fr; gap: 0; }
+}
