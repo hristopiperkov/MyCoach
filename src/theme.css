@@ -1,0 +1,30 @@
+:root { --bg: #11151d; --surface: #1b202b; --surface-raised: #242d39; --border: #39434e; --text: #f3f5f7; --muted: #acb6c6; --accent: #c7f27a; --accent-ink: #192418; }
+body { background: #11151d; color: #f3f5f7; }
+.mycoach-app { isolation: isolate; position: relative; min-height: 100dvh; display: flex; flex-direction: column; }
+.mycoach-app .fitness-backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 1; background: linear-gradient(180deg, #070c1220 0%, #070c1230 35%, #070c12c9 100%), url('/images/athletes-background.png') center top / cover no-repeat; }
+.mycoach-app .fitness-backdrop::before, .mycoach-app .fitness-backdrop::after { content: none; }
+.mycoach-app.content-mode .fitness-backdrop { background-image: linear-gradient(#10161be0, #10161bf2), url('/images/athletes-background.png'); }
+.site-header { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 80px; padding: 16px 4.5%; background: #0d1218e8; border-bottom: 1px solid #ffffff12; }
+.site-brand { display: inline-flex; align-items: center; gap: 14px; flex-shrink: 0; color: #fff; font-size: 28px; line-height: 1; font-weight: 800; letter-spacing: -1px; }
+.site-monogram { font-family: Arial, sans-serif; font-size: 35px; font-style: italic; font-weight: 900; color: #c7f27a; letter-spacing: -5px; padding-right: 5px; }
+.site-navigation { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 5px 14px; font-size: 14px; font-weight: 600; }
+.site-navigation a { padding: 10px 6px; min-height: 44px; display: inline-flex; align-items: center; }
+.site-navigation a:hover, .site-navigation a.selected { color: #c7f27a; }
+.site-navigation a.selected { text-decoration: underline; text-underline-offset: 7px; }
+.site-navigation .site-join { padding: 10px 20px; color: #c7f27a; border: 1px solid #c7f27a; border-radius: 8px; margin-left: 10px; }
+.site-navigation .site-join:hover { background: #c7f27a; color: #192418; }
+.site-header a:focus-visible { outline: 2px solid #c7f27a; outline-offset: 4px; }
+.mycoach-app .demo { margin-top: auto; padding: 16px 20px; background: #0d1218eb; color: #acb6c6; border-top: 1px solid #ffffff12; }
+.mycoach-app .concept, .mycoach-app #wellness { background: transparent; min-height: 0; }
+.mycoach-app .concept { flex: 1; }
+.mycoach-app .layout, .mycoach-app .wellness, .mycoach-app #performance .dashboard { width: 100%; }
+.mycoach-app .card, .mycoach-app .profile { background: #18212bef; border: 1px solid #39434e; box-shadow: 0 14px 40px #0002; }
+.mycoach-app .coach-photo { display: block; width: 100%; height: 230px; object-fit: cover; }
+.mycoach-app .profile > .avatar { width: 100%; height: 230px; border-radius: 0; font-size: 60px; background: #27332b; color: #c7f27a; }
+.mycoach-app .heroart { background: linear-gradient(0deg, #0c141c55, #0c141c22), url('/images/athletes-background.png') 12% center / auto 100%; border-radius: 16px; }
+.mycoach-app .heroart .sun, .mycoach-app .heroart .hill { display: none; }
+.mycoach-app .heroart .floating { background: #15202be8; border-color: #46513f; }
+.mycoach-app #performance .dashbody { grid-template-columns: 1fr; }
+.mycoach-app .page { width: 100%; flex: 1; }
+@media (max-width: 1100px) { .site-header { align-items: flex-start; flex-wrap: wrap; gap: 12px; } .site-navigation { justify-content: flex-start; } }
+@media (max-width: 600px) { .site-header { padding: 16px; } .site-brand { font-size: 24px; } .site-navigation { gap: 4px 12px; font-size: 13px; } .site-navigation .site-join { margin-left: 0; padding: 8px 12px; } .mycoach-app .fitness-backdrop { background-position: 38% top; } }

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate, useLocation } from "react-router";
 
 import Header from "./components/header/Header";
-import Navigation from "./components/navigation/Navigation";
 import Community from "./components/community/Community";
 import CoachCatalog from "./components/coach-catalog/CoachCatalog";
 import Workspace from "./components/coach-workspace/Workspace";
@@ -10,7 +9,11 @@ import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import PageNotFound from "./components/page-not-found/PageNotFound";
 
+import "./theme.css";
+
 export default function App() {
+  const { pathname } = useLocation();
+  const isAuthPage = pathname === "/login" || pathname === "/register";
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -62,11 +65,10 @@ export default function App() {
   const coaches = users.filter((user) => user.role === "Coach");
 
   return (
-    <>
+    <div className={`mycoach-app ${isAuthPage ? "auth-mode" : "content-mode"}`}>
       <div className="fitness-backdrop" aria-hidden="true"></div>
 
-      <Header />
-      <Navigation />
+      <Header compact={isAuthPage} />
 
       <Routes>
         <Route path="/" element={<Navigate to="/posts" replace />} />
@@ -76,7 +78,6 @@ export default function App() {
           element={
             <Community
               users={users}
-              coaches={coaches}
               loading={loading}
               error={error}
             />
@@ -100,7 +101,7 @@ export default function App() {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
 
-      <footer className="demo">MyCoach · University project</footer>
+      <footer className="demo">MyCoach · Move better. Live better.</footer>
 
       <div className="notice" role="status" aria-live="polite"></div>
 
@@ -117,6 +118,6 @@ export default function App() {
           Close
         </button>
       </dialog>
-    </>
+    </div>
   );
 }

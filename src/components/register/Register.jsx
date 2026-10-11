@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import "../auth/Auth.css";
+import AuthLayout from "../auth/AuthLayout";
 
 export default function Register() {
   function handleSubmit(event) {
@@ -8,10 +8,11 @@ export default function Register() {
   }
 
   return (
+    <AuthLayout>
     <section id="register-page" className="mycoach-auth" aria-labelledby="register-title">
       <form id="register" className="mycoach-auth__form" onSubmit={handleSubmit}>
-        <span className="mycoach-auth__eyebrow">Start your journey</span>
-        <h1 id="register-title">Join MyCoach</h1>
+        <span className="mycoach-auth__eyebrow">Join the community</span>
+        <h2 id="register-title">Create your account</h2>
         <p className="mycoach-auth__intro">Build healthy habits with people who support your goals.</p>
 
         <div className="mycoach-auth__names">
@@ -34,11 +35,11 @@ export default function Register() {
         <label htmlFor="confirm-password">Confirm password</label>
         <input type="password" id="confirm-password" name="confirm-password" autoComplete="new-password" required />
 
-        <label htmlFor="register-role">I am a</label>
-        <select id="register-role" name="role" defaultValue="Client">
-          <option value="Client">Client</option>
-          <option value="Coach">Coach</option>
-        </select>
+        <fieldset className="auth-role">
+          <legend>I am joining as a</legend>
+          <label><input type="radio" name="role" value="Client" defaultChecked /><span>Client</span></label>
+          <label><input type="radio" name="role" value="Coach" /><span>Coach</span></label>
+        </fieldset>
 
         <label htmlFor="register-avatar">Profile picture URL (optional)</label>
         <input type="url" id="register-avatar" name="img_url" placeholder="https://example.com/photo.jpg" aria-describedby="avatar-help" />
@@ -48,5 +49,6 @@ export default function Register() {
         <p className="mycoach-auth__footer">Already a member? <Link to="/login">Login</Link></p>
       </form>
     </section>
+    </AuthLayout>
   );
 }

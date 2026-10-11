@@ -1,18 +1,8 @@
-import { Link } from "react-router";
 
 export default function CoachCatalog({ coaches, loading, error }) {
     return (
         <section id="wellness" className="concept dark active">
-        <header className="topbar">
-          <Link to="/coaches" className="logo">
-            MyCoach
-            <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
-          </Link>
-          <div className="toplinks">
-            <Link className="outline btn" to="/posts">Community</Link>
-            <span className="avatar">AL</span>
-          </div>
-        </header>
+
         <main className="wellness">
           <div className="hero">
             <div>
@@ -56,7 +46,7 @@ export default function CoachCatalog({ coaches, loading, error }) {
               <article className="profile" key={`${coach.first_name}-${coach.last_name}-${index}`}>
                 {coach.img_url ? (
                   <img
-                    className="avatar"
+                    className="coach-photo"
                     src={coach.img_url}
                     alt={`${coach.first_name} ${coach.last_name}`}
                   />

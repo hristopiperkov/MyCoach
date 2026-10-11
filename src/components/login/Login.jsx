@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import "../auth/Auth.css";
+import AuthLayout from "../auth/AuthLayout";
 
 export default function Login() {
   function handleSubmit(event) {
@@ -8,10 +8,11 @@ export default function Login() {
   }
 
   return (
+    <AuthLayout>
     <section id="login-page" className="mycoach-auth" aria-labelledby="login-title">
       <form id="login" className="mycoach-auth__form" onSubmit={handleSubmit}>
         <span className="mycoach-auth__eyebrow">Welcome back</span>
-        <h1 id="login-title">Login to MyCoach</h1>
+        <h2 id="login-title">Login to MyCoach</h2>
         <p className="mycoach-auth__intro">Connect with your community and keep making progress.</p>
 
         <label htmlFor="login-email">Email</label>
@@ -24,5 +25,6 @@ export default function Login() {
         <p className="mycoach-auth__footer">New to MyCoach? <Link to="/register">Create an account</Link></p>
       </form>
     </section>
+    </AuthLayout>
   );
 }

@@ -1,20 +1,9 @@
-import { Link } from "react-router";
 import "./Workspace.css";
 
 export default function Workspace() {
   return (
       <section id="performance" className="concept dark active">
-        <header className="topbar">
-          <Link to="/workspace" className="logo">
-            MyCoach
-            <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
-          </Link>
-          <div className="toplinks">
-            <span className="muted">COACH WORKSPACE</span>
-            <Link className="btn" to="/posts">Community ↗</Link>
-            <span className="avatar">SK</span>
-          </div>
-        </header>
+
         <main className="dashboard">
           <div className="dashhead">
             <div>

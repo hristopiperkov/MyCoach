@@ -1,17 +1,14 @@
 import { Link } from "react-router";
+import Navigation from "../navigation/Navigation";
 
-export default function Header() {
-    return (
-        <header className="topbar">
-        <Link className="logo" to="/">
-          MyCoach
-          <img className="brand-mark" src="/images/logo.png" alt="" width="52" height="52" />
-        </Link>
-        <div className="toplinks">
-          <Link to="/posts">Your community</Link>
-          <Link className="btn outline" to="/coaches">Find a coach</Link>
-          <span className="avatar" aria-label="Alex profile">AL</span>
-        </div>
-      </header>
-    );
+export default function Header({ compact = false }) {
+  return (
+    <header className="site-header">
+      <Link className="site-brand" to="/" aria-label="MyCoach home">
+        <span className="site-monogram" aria-hidden="true">MC</span>
+        <span>MyCoach</span>
+      </Link>
+      <Navigation compact={compact} />
+    </header>
+  );
 }
