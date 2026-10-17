@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router";
+import "./theme.css";
 
 import Header from "./components/header/Header";
 import Community from "./components/community/Community";
