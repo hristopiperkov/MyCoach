@@ -1,3 +1,5 @@
+import "./CoachCatalog.css";
+
 
 export default function CoachCatalog({ coaches, loading, error }) {
     return (

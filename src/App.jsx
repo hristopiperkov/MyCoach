@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router";
-import "./theme.css";
+
 import ProtectedRoute from "./components/guards/ProtectedRoute";
 import GuestRoute from "./components/guards/GuestRoute";
 import CoachRoute from "./components/guards/CoachRoute";
+import Profile from "./components/profile/Profile";
+import useAuth from "./hooks/useAuth";
 import Header from "./components/header/Header";
 import Community from "./components/community/Community";
 import CoachCatalog from "./components/coach-catalog/CoachCatalog";
@@ -15,6 +17,7 @@ import PageNotFound from "./components/page-not-found/PageNotFound";
 import "./theme.css";
 
 export default function App() {
+  const { user } = useAuth();
   const { pathname } = useLocation();
   const isAuthPage = pathname === "/login" || pathname === "/register";
   const [users, setUsers] = useState([]);
@@ -25,7 +28,7 @@ export default function App() {
     const controller = new AbortController();
 
     fetch(
-      "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=first_name,last_name,role,specialization,hourly_rate,fitness_goals,img_url,location",
+      "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=id,first_name,last_name,role,specialization,hourly_rate,fitness_goals,img_url,location",
       {
         headers: {
           apikey: import.meta.env.VITE_API_KEY,
@@ -63,7 +66,7 @@ export default function App() {
       });
 
     return () => controller.abort();
-  }, []);
+  }, [user?.id]);
 
   const coaches = users.filter((user) => user.role === "Coach");
 
@@ -99,7 +102,10 @@ export default function App() {
         />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/workspace" element={<Workspace />} />
+          <Route path="/profile" element={<Profile key={user?.id} onSaved={(updated) => setUsers(current => current.some(member => member.id === updated.id) ? current.map(member => member.id === updated.id ? updated : member) : [...current, updated])} />} />
+          <Route element={<CoachRoute />}>
+            <Route path="/workspace" element={<Workspace />} />
+          </Route>
         </Route>
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<Login />} />

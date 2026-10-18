@@ -49,6 +49,8 @@ export default function Navigation({ compact = false }) {
 
       {!loading && user && !compact && (
         <>
+          <NavLink to="/profile" className={activeClass}>My profile</NavLink>
+
           {isCoach && (
             <NavLink to="/workspace" className={activeClass}>
               Workspace
