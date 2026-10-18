@@ -10,6 +10,8 @@ import CoachCatalog from "./components/coach-catalog/CoachCatalog";
 import Workspace from "./components/coach-workspace/Workspace";
 import Profile from "./components/profile/Profile";
 import CreatePost from "./components/create-post/CreatePost";
+import PostDetails from "./components/post-details/PostDetails";
+import EditPost from "./components/edit-post/EditPost";
 import MyPosts from "./components/my-posts/MyPosts";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
@@ -112,6 +114,8 @@ export default function App() {
 
         <Route path="/posts" element={<Community />} />
 
+        <Route path="/posts/:postId" element={<PostDetails />} />
+
         <Route
           path="/coaches"
           element={
@@ -124,6 +128,9 @@ export default function App() {
         />
 
         <Route element={<ProtectedRoute />}>
+          
+          <Route path="/posts/:postId/edit" element={<EditPost />} />
+          
           <Route
             path="/profile"
             element={

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import supabase from "../../supabase";
 import "./PostList.css";
 
@@ -47,9 +48,10 @@ export default function PostList({ authorId = null }) {
             <p className="muted"><time dateTime={post.created_at}>{new Date(post.created_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</time></p>
           </div>
         </div>
-        <h2>{post.title}</h2>
+        <h2><Link to={`/posts/${post.id}`}>{post.title}</Link></h2>
         <p className="post-list-content">{post.content}</p>
         {post.image_url && <img className="post-list-image" src={post.image_url} alt={post.title} loading="lazy" />}
+        <div className="post-detail-actions"><Link className="btn outline" to={`/posts/${post.id}`}>View post ↗</Link></div>
       </article>;
     })}
   </div>;
