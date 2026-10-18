@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router";
-
 import ProtectedRoute from "./components/guards/ProtectedRoute";
 import GuestRoute from "./components/guards/GuestRoute";
 import CoachRoute from "./components/guards/CoachRoute";
@@ -13,6 +12,7 @@ import Workspace from "./components/coach-workspace/Workspace";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import PageNotFound from "./components/page-not-found/PageNotFound";
+import CreatePost from "./components/create-post/CreatePost";
 
 import "./theme.css";
 
@@ -103,6 +103,7 @@ export default function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile key={user?.id} onSaved={(updated) => setUsers(current => current.some(member => member.id === updated.id) ? current.map(member => member.id === updated.id ? updated : member) : [...current, updated])} />} />
+          <Route path="/posts/new" element={<CreatePost />} />
           <Route element={<CoachRoute />}>
             <Route path="/workspace" element={<Workspace />} />
           </Route>
