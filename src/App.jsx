@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router";
 import "./theme.css";
-
+import ProtectedRoute from "./components/guards/ProtectedRoute";
+import GuestRoute from "./components/guards/GuestRoute";
+import CoachRoute from "./components/guards/CoachRoute";
 import Header from "./components/header/Header";
 import Community from "./components/community/Community";
 import CoachCatalog from "./components/coach-catalog/CoachCatalog";
@@ -96,9 +98,13 @@ export default function App() {
           }
         />
 
-        <Route path="/workspace" element={<Workspace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/workspace" element={<Workspace />} />
+        </Route>
+        <Route element={<GuestRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
 

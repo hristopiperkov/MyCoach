@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import AuthLayout from "../auth/AuthLayout";
 import request from "../../request";
+import supabase from "../../supabase";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -55,9 +56,16 @@ export default function Register() {
           throw new Error();
         }
       } catch {
-        setError("Enter a valid image URL starting with http:// or https://.");
+        setError(
+          "Enter a valid image URL starting with http:// or https://."
+        );
         return;
       }
+    }
+
+    if (!supabase) {
+      setError("Missing VITE_API_KEY in .env.local.");
+      return;
     }
 
     setLoading(true);
@@ -74,13 +82,27 @@ export default function Register() {
         },
       });
 
-      setMessage(
-        result?.access_token
-          ? "Your account was created successfully."
-          : "Check your email for a confirmation link. If you already have an account, use Login."
-      );
+      if (result?.access_token && result?.refresh_token) {
+        try {
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token: result.access_token,
+            refresh_token: result.refresh_token,
+          });
 
-      form.reset();
+          if (sessionError) throw sessionError;
+
+          // GuestRoute redirects when Auth Context receives the session.
+        } catch {
+          setError(
+            "Your account was created, but automatic login failed. Please use Login."
+          );
+        }
+      } else {
+        setMessage(
+          "Check your email for a confirmation link. If you already have an account, use Login."
+        );
+        form.reset();
+      }
     } catch (error) {
       setError(error.message || "Registration failed. Please try again.");
     } finally {
@@ -101,7 +123,9 @@ export default function Register() {
           onSubmit={handleSubmit}
           aria-busy={loading}
         >
-          <span className="mycoach-auth__eyebrow">Join the community</span>
+          <span className="mycoach-auth__eyebrow">
+            Join the community
+          </span>
 
           <h2 id="register-title">Create your account</h2>
 

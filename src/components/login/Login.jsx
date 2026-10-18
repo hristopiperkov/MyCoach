@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import AuthLayout from "../auth/AuthLayout";
 import supabase from "../../supabase";
 
 export default function Login() {
-  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +33,6 @@ export default function Login() {
 
       if (loginError) throw loginError;
 
-      navigate("/posts", { replace: true });
     } catch (error) {
       setError(error.message || "Login failed. Please try again.");
     } finally {

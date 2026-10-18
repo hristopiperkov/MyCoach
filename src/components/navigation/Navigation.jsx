@@ -10,6 +10,7 @@ export default function Navigation({ compact = false }) {
   const navigate = useNavigate();
 
   const activeClass = ({ isActive }) => (isActive ? "selected" : "");
+  const isCoach = user?.user_metadata?.role === "Coach";
 
   async function handleLogout() {
     if (loggingOut) return;
@@ -48,9 +49,11 @@ export default function Navigation({ compact = false }) {
 
       {!loading && user && !compact && (
         <>
-          <NavLink to="/workspace" className={activeClass}>
-            Workspace
-          </NavLink>
+          {isCoach && (
+            <NavLink to="/workspace" className={activeClass}>
+              Workspace
+            </NavLink>
+          )}
 
           <NavLink to="/my-posts" className={activeClass}>
             My posts
@@ -67,17 +70,14 @@ export default function Navigation({ compact = false }) {
           Checking session...
         </span>
       ) : user ? (
-        <>
-
-          <button
-            type="button"
-            className="navigation-logout"
-            onClick={handleLogout}
-            disabled={loggingOut}
-          >
-            {loggingOut ? "Logging out..." : "Logout"}
-          </button>
-        </>
+        <button
+          type="button"
+          className="navigation-logout"
+          onClick={handleLogout}
+          disabled={loggingOut}
+        >
+          {loggingOut ? "Logging out..." : "Logout"}
+        </button>
       ) : (
         <>
           <NavLink to="/login" className={activeClass}>
