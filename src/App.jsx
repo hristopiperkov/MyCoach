@@ -1,25 +1,27 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router";
+import useAuth from "./hooks/useAuth";
 import ProtectedRoute from "./components/guards/ProtectedRoute";
 import GuestRoute from "./components/guards/GuestRoute";
 import CoachRoute from "./components/guards/CoachRoute";
-import Profile from "./components/profile/Profile";
-import useAuth from "./hooks/useAuth";
 import Header from "./components/header/Header";
 import Community from "./components/community/Community";
 import CoachCatalog from "./components/coach-catalog/CoachCatalog";
 import Workspace from "./components/coach-workspace/Workspace";
+import Profile from "./components/profile/Profile";
+import CreatePost from "./components/create-post/CreatePost";
+import MyPosts from "./components/my-posts/MyPosts";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import PageNotFound from "./components/page-not-found/PageNotFound";
-import CreatePost from "./components/create-post/CreatePost";
-
 import "./theme.css";
 
 export default function App() {
   const { user } = useAuth();
   const { pathname } = useLocation();
+
   const isAuthPage = pathname === "/login" || pathname === "/register";
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -27,16 +29,27 @@ export default function App() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch(
-      "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=id,first_name,last_name,role,specialization,hourly_rate,currency,fitness_goals,img_url,location",
-      {
-        headers: {
-          apikey: import.meta.env.VITE_API_KEY,
-        },
-        signal: controller.signal,
-      }
-    )
-      .then(async (response) => {
+    async function loadMembers() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const apiKey = import.meta.env.VITE_API_KEY;
+
+        if (!apiKey) {
+          throw new Error("Missing VITE_API_KEY in .env.local.");
+        }
+
+        const response = await fetch(
+          "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=id,first_name,last_name,role,specialization,hourly_rate,currency,fitness_goals,img_url,location",
+          {
+            headers: {
+              apikey: apiKey,
+            },
+            signal: controller.signal,
+          }
+        );
+
         const result = await response.json();
 
         if (!response.ok) {
@@ -47,31 +60,49 @@ export default function App() {
           throw new Error("The database returned an unexpected response.");
         }
 
-        return result;
-      })
-      .then((members) => {
         if (!controller.signal.aborted) {
-          setUsers(members);
+          setUsers(result);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         if (!controller.signal.aborted) {
-          setError(error.message);
+          setError(error.message || "Could not load members.");
         }
-      })
-      .finally(() => {
+      } finally {
         if (!controller.signal.aborted) {
           setLoading(false);
         }
-      });
+      }
+    }
+
+    loadMembers();
 
     return () => controller.abort();
   }, [user?.id]);
 
-  const coaches = users.filter((user) => user.role === "Coach");
+  function handleProfileSaved(updatedProfile) {
+    setUsers((currentUsers) => {
+      const profileExists = currentUsers.some(
+        (member) => member.id === updatedProfile.id
+      );
+
+      if (!profileExists) {
+        return [...currentUsers, updatedProfile];
+      }
+
+      return currentUsers.map((member) =>
+        member.id === updatedProfile.id ? updatedProfile : member
+      );
+    });
+  }
+
+  const coaches = users.filter((member) => member.role === "Coach");
 
   return (
-    <div className={`mycoach-app ${isAuthPage ? "auth-mode" : "content-mode"}`}>
+    <div
+      className={`mycoach-app ${
+        isAuthPage ? "auth-mode" : "content-mode"
+      }`}
+    >
       <div className="fitness-backdrop" aria-hidden="true"></div>
 
       <Header compact={isAuthPage} />
@@ -79,16 +110,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/posts" replace />} />
 
-        <Route
-          path="/posts"
-          element={
-            <Community
-              users={users}
-              loading={loading}
-              error={error}
-            />
-          }
-        />
+        <Route path="/posts" element={<Community />} />
 
         <Route
           path="/coaches"
@@ -102,22 +124,42 @@ export default function App() {
         />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/profile" element={<Profile key={user?.id} onSaved={(updated) => setUsers(current => current.some(member => member.id === updated.id) ? current.map(member => member.id === updated.id ? updated : member) : [...current, updated])} />} />
+          <Route
+            path="/profile"
+            element={
+              <Profile
+                key={user?.id}
+                onSaved={handleProfileSaved}
+              />
+            }
+          />
+
           <Route path="/posts/new" element={<CreatePost />} />
+
+          <Route path="/my-posts" element={<MyPosts />} />
+
           <Route element={<CoachRoute />}>
             <Route path="/workspace" element={<Workspace />} />
           </Route>
         </Route>
+
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
+
         <Route path="*" element={<PageNotFound />} />
       </Routes>
 
-      <footer className="demo">MyCoach · Move better. Live better.</footer>
+      <footer className="demo">
+        MyCoach · Move better. Live better.
+      </footer>
 
-      <div className="notice" role="status" aria-live="polite"></div>
+      <div
+        className="notice"
+        role="status"
+        aria-live="polite"
+      ></div>
 
       <dialog className="modal" id="details">
         <h2 id="dialogtitle"></h2>
@@ -127,7 +169,9 @@ export default function App() {
           className="btn outline"
           id="closemodal"
           type="button"
-          onClick={(event) => event.currentTarget.closest("dialog").close()}
+          onClick={(event) =>
+            event.currentTarget.closest("dialog")?.close()
+          }
         >
           Close
         </button>

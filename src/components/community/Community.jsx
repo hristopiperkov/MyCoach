@@ -1,6 +1,9 @@
 import { Link } from "react-router";
+import PostList from "../posts/PostList";
+import useAuth from "../../hooks/useAuth";
 
-export default function Community({ users, loading, error }) {
+export default function Community() {
+    const { user } = useAuth();
     return (
         <section id="community" className="concept dark active">
 
@@ -10,7 +13,7 @@ export default function Community({ users, loading, error }) {
               <Link className="selected" to="/posts">◉ Your feed</Link>
               <Link to="/my-posts">▤ My posts</Link>
               <Link to="/coaches">↗ Explore coaches</Link>
-              <Link to="/workspace">▤ Coach workspace</Link>
+              {user?.user_metadata?.role === "Coach" && <Link to="/workspace">▤ Coach workspace</Link>}
             </nav>
             <div className="note">
               <span className="sub">A little every day</span>
@@ -28,106 +31,11 @@ export default function Community({ users, loading, error }) {
               </div>
               <span className="pill">Community feed</span>
             </div>
-            <form className="card composer" id="postform" hidden>
-              <div className="person">
-                <span className="avatar">AL</span>
-                <b>What’s your win today, Alex?</b>
-              </div>
-              <textarea id="posttext" aria-label="New post" placeholder="Share a milestone, ask a question, or cheer someone on…" required maxLength="1000"></textarea>
-              <div className="actions">
-                <span className="muted">Your community can see this post</span>
-                <button className="btn" type="submit">Share post ↗</button>
-              </div>
-            </form>
             <div className="wrapactions">
               <Link className="btn" to="/posts/new">+ Share a new post</Link>
               <Link className="btn outline" to="/my-posts">My posts</Link>
             </div>
-            <div id="newposts">
-              <h2>Community members</h2>
-              {loading && <p role="status">Loading members...</p>}
-              {error && <p className="errorbox" role="alert">{error}</p>}
-              {!loading && !error && users.length === 0 && (
-                <p className="muted">No members found.</p>
-              )}
-              {!loading && !error && users.map((user, index) => (
-                <article className="card" key={`${user.first_name}-${user.last_name}-${index}`}>
-                  <div className="person">
-                    {user.img_url ? (
-                      <img className="avatar" src={user.img_url} alt={`${user.first_name} ${user.last_name}`} style={{ objectFit: "cover" }} />
-                    ) : (
-                      <span className="avatar">{user.first_name?.[0]}{user.last_name?.[0]}</span>
-                    )}
-                    <div>
-                      <b>{user.first_name} {user.last_name}</b>
-                      <p className="muted">{user.role} · {user.location}</p>
-                    </div>
-                  </div>
-                  <p>{user.role === "Coach" ? user.specialization : user.fitness_goals}</p>
-                  {user.role === "Coach" && user.hourly_rate != null && (
-                    <span className="pill">{user.hourly_rate} / hour</span>
-                  )}
-                </article>
-              ))}
-            </div>
-            <article className="card feedpost" hidden data-followed="true">
-              <div className="person">
-                    <span className="avatar" aria-label="Sarah Kim profile">
-                      SK
-                    </span>
-                <div>
-                  <b>Sarah Kim</b>
-                  <span className="pill">Coach</span>
-                  <p className="muted">Strength &amp; mobility · 2 hours ago</p>
-                </div>
-              </div>
-              <p>You don’t need a perfect week to make progress. Start with 20 minutes, move with intention, and build from there. 🌱</p>
-              <div className="postart">
-                <small className="sub">The everyday strength series</small>
-                <strong>
-                  Small steps.
-                  <br />
-                  Stronger you.
-                </strong>
-              </div>
-              <div className="postactions">
-                <button className="like" aria-pressed="false">
-                  ♡ 
-                  <span>48</span>
-                   cheers
-                </button>
-                <button data-action="comment">◌ Add a comment</button>
-                <button data-action="save" aria-pressed="false">↗ Save</button>
-              </div>
-              <form className="commentform" hidden>
-                <input className="search" aria-label="Comment" placeholder="Write something supportive…" required />
-                <button className="btn" type="submit">Reply</button>
-                <div className="comments"></div>
-              </form>
-            </article>
-            <article className="card feedpost" hidden data-followed="false">
-              <div className="person">
-                <span className="avatar" style={{"background": "#394251"}}>MR</span>
-                <div>
-                  <b>Marcus Reed</b>
-                  <p className="muted">Community member · 4 hours ago</p>
-                </div>
-              </div>
-              <p>First 5K without stopping! Six weeks ago I couldn’t run for five minutes. Thanks to everyone who kept me going.</p>
-              <div className="postactions">
-                <button className="like" aria-pressed="false">
-                  ♡ 
-                  <span>26</span>
-                   cheers
-                </button>
-                <button data-action="comment">◌ Add a comment</button>
-              </div>
-              <form className="commentform" hidden>
-                <input className="search" aria-label="Comment" placeholder="Write a reply…" required />
-                <button className="btn">Reply</button>
-                <div className="comments"></div>
-              </form>
-            </article>
+            <PostList />
           </main>
           <aside className="right">
             <div className="card">
