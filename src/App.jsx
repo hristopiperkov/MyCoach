@@ -28,7 +28,7 @@ export default function App() {
     const controller = new AbortController();
 
     fetch(
-      "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=id,first_name,last_name,role,specialization,hourly_rate,fitness_goals,img_url,location",
+      "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=id,first_name,last_name,role,specialization,hourly_rate,currency,fitness_goals,img_url,location",
       {
         headers: {
           apikey: import.meta.env.VITE_API_KEY,

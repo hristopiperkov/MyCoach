@@ -13,7 +13,7 @@ export default function Profile({ onSaved }) {
 
   useEffect(() => {
     let active = true;
-    supabase.from("users").select("id,first_name,last_name,role,img_url,location,specialization,hourly_rate,fitness_goals")
+    supabase.from("users").select("id,first_name,last_name,role,img_url,location,specialization,hourly_rate,currency,fitness_goals")
       .eq("auth_user_id", user.id).maybeSingle()
       .then(({ data, error }) => {
         if (!active) return;
@@ -52,13 +52,15 @@ export default function Profile({ onSaved }) {
       if (rate !== null && (!Number.isFinite(rate) || rate < 0)) return setError("Enter a valid non-negative hourly rate.");
       updates.specialization = profile.specialization?.trim() || null;
       updates.hourly_rate = rate;
+      if (!["EUR", "USD", "GBP", "BGN"].includes(profile.currency)) return setError("Please select a supported currency.");
+      updates.currency = profile.currency;
     } else {
       updates.fitness_goals = profile.fitness_goals?.trim() || null;
     }
     setSaving(true);
     try {
       const { data, error } = await supabase.from("users").update(updates)
-        .eq("auth_user_id", user.id).select("id,first_name,last_name,role,img_url,location,specialization,hourly_rate,fitness_goals").single();
+        .eq("auth_user_id", user.id).select("id,first_name,last_name,role,img_url,location,specialization,hourly_rate,currency,fitness_goals").single();
       if (error) throw error;
       setProfile(data);
       onSaved(data);
@@ -86,7 +88,17 @@ export default function Profile({ onSaved }) {
             <label>City or coaching location<input name="location" value={profile.location ?? ""} onChange={change} /></label>
             {profile.role === "Coach" ? <>
               <label>Specialties<textarea name="specialization" value={profile.specialization ?? ""} onChange={change} rows={4} /></label>
-              <label>Hourly rate<input type="number" min="0" step="0.01" name="hourly_rate" value={profile.hourly_rate ?? ""} onChange={change} /></label>
+              <div className="profile-rate">
+                <label>Hourly rate<input type="number" min="0" step="0.01" name="hourly_rate" value={profile.hourly_rate ?? ""} onChange={change} /></label>
+                <label>Currency
+                  <select name="currency" value={profile.currency ?? "EUR"} onChange={change}>
+                    <option value="EUR">EUR — Euro</option>
+                    <option value="USD">USD — US dollar</option>
+                    <option value="GBP">GBP — British pound</option>
+                    <option value="BGN">BGN — Bulgarian lev</option>
+                  </select>
+                </label>
+              </div>
             </> : <label>Fitness goals<textarea name="fitness_goals" value={profile.fitness_goals ?? ""} onChange={change} rows={4} /></label>}
             <button type="submit" className="btn">{saving ? "Saving..." : "Save profile"}</button>
           </fieldset>

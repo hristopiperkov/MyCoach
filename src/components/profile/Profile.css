@@ -7,3 +7,8 @@
 .profile-editor textarea { resize: vertical; }
 .profile-editor input:focus-visible, .profile-editor textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .profile-editor fieldset:disabled { opacity: .65; }
+
+.profile-rate { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.profile-editor select { width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; }
+.profile-editor select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 600px) { .profile-rate { grid-template-columns: 1fr; } }

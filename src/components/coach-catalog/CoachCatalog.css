@@ -1,14 +1,7 @@
+/* Larger portraits, scoped to the coach catalog. */
 .mycoach-app #wellness .profile > .coach-photo,
-.mycoach-app #wellness .profile > .avatar {
-  height: 380px;
-  width: 100%;
-  object-fit: cover;
-  object-position: center 25%;
-}
-
+.mycoach-app #wellness .profile > .avatar { height: 380px; width: 100%; object-fit: cover; object-position: center 25%; }
 @media (max-width: 600px) {
   .mycoach-app #wellness .profile > .coach-photo,
-  .mycoach-app #wellness .profile > .avatar {
-    height: 320px;
-  }
+  .mycoach-app #wellness .profile > .avatar { height: 320px; }
 }
