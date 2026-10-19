@@ -22,10 +22,15 @@ export default function Comments({ postId }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
 
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [submitError, setSubmitError] = useState("");
+
+  const [deletingId, setDeletingId] = useState(null);
+  const [deleteError, setDeleteError] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -44,6 +49,7 @@ export default function Comments({ postId }) {
           .select(commentFields)
           .eq("post_id", postId)
           .order("created_at", { ascending: true })
+          .order("id", { ascending: true })
           .abortSignal(controller.signal);
 
         if (requestError) throw requestError;
@@ -65,14 +71,25 @@ export default function Comments({ postId }) {
     loadComments();
 
     return () => controller.abort();
-  }, [postId]);
+  }, [postId, attempt]);
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!user || saving || loading || error) return;
+    if (
+      !user ||
+      authLoading ||
+      saving ||
+      loading ||
+      error ||
+      deletingId !== null
+    ) {
+      return;
+    }
 
     setSubmitError("");
+    setDeleteError("");
+    setMessage("");
 
     const text = content.trim();
 
@@ -101,6 +118,7 @@ export default function Comments({ postId }) {
 
       setComments((currentComments) => [...currentComments, data]);
       setContent("");
+      setMessage("Comment added.");
     } catch (error) {
       setSubmitError(error.message || "Could not add your comment.");
     } finally {
@@ -108,9 +126,65 @@ export default function Comments({ postId }) {
     }
   }
 
+  async function handleDelete(comment) {
+    if (
+      !user ||
+      authLoading ||
+      user.id !== comment.author_id ||
+      deletingId !== null ||
+      saving
+    ) {
+      return;
+    }
+
+    if (!window.confirm("Delete this comment?")) return;
+
+    setDeleteError("");
+    setSubmitError("");
+    setMessage("");
+    setDeletingId(comment.id);
+
+    try {
+      if (!supabase) {
+        throw new Error("Supabase is not configured.");
+      }
+
+      const { data, error: requestError } = await supabase
+        .from("comments")
+        .delete()
+        .eq("id", comment.id)
+        .eq("author_id", user.id)
+        .select("id");
+
+      if (requestError) throw requestError;
+
+      if (!data?.length) {
+        throw new Error(
+          "The comment could not be deleted. It may already be removed or you may no longer have permission."
+        );
+      }
+
+      setComments((currentComments) =>
+        currentComments.filter((item) => item.id !== comment.id)
+      );
+
+      setMessage("Comment deleted.");
+    } catch (error) {
+      setDeleteError(error.message || "Could not delete your comment.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  const formDisabled =
+    saving || loading || !!error || deletingId !== null;
+
   return (
-    <section className="post-comments" aria-labelledby="comments-title">
-      <h2 id="comments-title">
+    <section
+      className="post-comments"
+      aria-labelledby={`comments-title-${postId}`}
+    >
+      <h2 id={`comments-title-${postId}`}>
         Comments
         {!loading && !error && ` (${comments.length})`}
       </h2>
@@ -118,9 +192,19 @@ export default function Comments({ postId }) {
       {loading && <p role="status">Loading comments...</p>}
 
       {error && (
-        <p className="errorbox" role="alert">
-          {error}
-        </p>
+        <div>
+          <p className="errorbox" role="alert">
+            {error}
+          </p>
+
+          <button
+            className="btn outline"
+            type="button"
+            onClick={() => setAttempt((value) => value + 1)}
+          >
+            Try again
+          </button>
+        </div>
       )}
 
       {!loading && !error && comments.length === 0 && (
@@ -148,6 +232,7 @@ export default function Comments({ postId }) {
                     className="avatar"
                     src={comment.author.img_url}
                     alt=""
+                    loading="lazy"
                   />
                 ) : (
                   <span className="avatar">
@@ -168,9 +253,28 @@ export default function Comments({ postId }) {
               </div>
 
               <p className="comment-content">{comment.content}</p>
+
+              {!authLoading && user?.id === comment.author_id && (
+                <button
+                  className="btn outline"
+                  type="button"
+                  disabled={deletingId !== null || saving}
+                  onClick={() => handleDelete(comment)}
+                >
+                  {deletingId === comment.id
+                    ? "Deleting..."
+                    : "Delete comment"}
+                </button>
+              )}
             </article>
           );
         })}
+
+      {deleteError && (
+        <p className="errorbox" role="alert">
+          {deleteError}
+        </p>
+      )}
 
       {authLoading ? (
         <p role="status">Checking session...</p>
@@ -180,24 +284,29 @@ export default function Comments({ postId }) {
           onSubmit={handleSubmit}
           aria-busy={saving}
         >
-          <label htmlFor="new-comment">Add a comment</label>
+          <label htmlFor={`new-comment-${postId}`}>
+            Add a comment
+          </label>
 
           <textarea
-            id="new-comment"
+            id={`new-comment-${postId}`}
             name="content"
             rows={3}
             maxLength={2000}
             placeholder="Share a thought or encourage someone..."
             value={content}
-            onChange={(event) => setContent(event.target.value)}
-            disabled={saving || loading || !!error}
+            onChange={(event) => {
+              setContent(event.target.value);
+              setMessage("");
+            }}
+            disabled={formDisabled}
             required
           />
 
           <button
             className="btn"
             type="submit"
-            disabled={saving || loading || !!error}
+            disabled={formDisabled}
           >
             {saving ? "Posting..." : "Post comment"}
           </button>
@@ -210,13 +319,16 @@ export default function Comments({ postId }) {
         </form>
       ) : (
         <p className="muted">
-          <Link
-            to="/login"
-            state={{ from: `/posts/${postId}` }}
-          >
+          <Link to="/login" state={{ from: `/posts/${postId}` }}>
             Log in
           </Link>{" "}
           to add a comment.
+        </p>
+      )}
+
+      {message && (
+        <p className="lime" role="status">
+          {message}
         </p>
       )}
     </section>

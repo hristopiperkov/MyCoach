@@ -9,6 +9,15 @@
   min-width: 0;
 }
 
+.post-comments .person {
+  align-items: flex-start;
+}
+
+.post-comments .person > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .post-comments .avatar {
   width: 40px;
   height: 40px;
@@ -18,7 +27,7 @@
 }
 
 .comment-content {
-  margin-top: 14px;
+  margin: 14px 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -44,7 +53,9 @@
   resize: vertical;
 }
 
-.comment-editor textarea:focus-visible {
+.comment-editor textarea:focus-visible,
+.post-comments button:focus-visible,
+.post-comments a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -53,12 +64,12 @@
   justify-self: start;
 }
 
-.comment-editor button:disabled,
+.post-comments button:disabled,
 .comment-editor textarea:disabled {
   opacity: 0.6;
 }
 
-.comment-editor button:disabled {
+.post-comments button:disabled {
   cursor: wait;
 }
 
