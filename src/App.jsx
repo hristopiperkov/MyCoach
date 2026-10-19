@@ -10,9 +10,9 @@ import CoachCatalog from "./components/coach-catalog/CoachCatalog";
 import Workspace from "./components/coach-workspace/Workspace";
 import Profile from "./components/profile/Profile";
 import CreatePost from "./components/create-post/CreatePost";
+import MyPosts from "./components/my-posts/MyPosts";
 import PostDetails from "./components/post-details/PostDetails";
 import EditPost from "./components/edit-post/EditPost";
-import MyPosts from "./components/my-posts/MyPosts";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import PageNotFound from "./components/page-not-found/PageNotFound";
@@ -43,7 +43,7 @@ export default function App() {
         }
 
         const response = await fetch(
-          "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=id,first_name,last_name,role,specialization,hourly_rate,currency,fitness_goals,img_url,location",
+          "https://nwoawxvbarblzgrfedqa.supabase.co/rest/v1/users?select=id,first_name,last_name,role,specialization,description,hourly_rate,currency,fitness_goals,img_url,location",
           {
             headers: {
               apikey: apiKey,
@@ -128,9 +128,6 @@ export default function App() {
         />
 
         <Route element={<ProtectedRoute />}>
-          
-          <Route path="/posts/:postId/edit" element={<EditPost />} />
-          
           <Route
             path="/profile"
             element={
@@ -142,7 +139,7 @@ export default function App() {
           />
 
           <Route path="/posts/new" element={<CreatePost />} />
-
+          <Route path="/posts/:postId/edit" element={<EditPost />} />
           <Route path="/my-posts" element={<MyPosts />} />
 
           <Route element={<CoachRoute />}>

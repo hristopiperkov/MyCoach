@@ -1,6 +1,41 @@
+import { useState } from "react";
 import "./CoachCatalog.css";
 
+const FILTERS = [
+  { value: "all", label: "All coaches" },
+  { value: "strength", label: "Strength" },
+  { value: "nutrition", label: "Nutrition" },
+  { value: "movement", label: "Movement" },
+];
+
+const SPECIALTY_KEYWORDS = {
+  strength: ["strength", "weightlifting", "bodybuilding", "powerlifting"],
+  nutrition: ["nutrition", "diet", "meal"],
+  movement: ["movement", "mobility", "yoga", "pilates", "flexibility"],
+};
+
 export default function CoachCatalog({ coaches, loading, error }) {
+  const [search, setSearch] = useState("");
+  const [specialty, setSpecialty] = useState("all");
+
+  const filteredCoaches = coaches.filter((coach) => {
+    const name = `${coach.first_name ?? ""} ${coach.last_name ?? ""}`;
+    const specialization = (coach.specialization ?? "").toLowerCase();
+    const searchableText = `${name} ${specialization}`.toLowerCase();
+
+    const matchesSearch = searchableText.includes(
+      search.trim().toLowerCase()
+    );
+
+    const matchesSpecialty =
+      specialty === "all" ||
+      SPECIALTY_KEYWORDS[specialty].some((keyword) =>
+        specialization.includes(keyword)
+      );
+
+    return matchesSearch && matchesSpecialty;
+  });
+
   return (
     <section id="wellness" className="concept dark active">
       <main className="wellness">
@@ -58,41 +93,26 @@ export default function CoachCatalog({ coaches, loading, error }) {
           <input
             className="search"
             id="coachsearch"
+            type="search"
             aria-label="Search coaches"
             placeholder="Search name or specialty…"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
           />
         </div>
 
         <div className="chips" aria-label="Filter coach specialty">
-          <button
-            type="button"
-            className="selected"
-            data-filter="all"
-            aria-pressed="true"
-          >
-            All coaches
-          </button>
-          <button
-            type="button"
-            data-filter="strength"
-            aria-pressed="false"
-          >
-            Strength
-          </button>
-          <button
-            type="button"
-            data-filter="nutrition"
-            aria-pressed="false"
-          >
-            Nutrition
-          </button>
-          <button
-            type="button"
-            data-filter="movement"
-            aria-pressed="false"
-          >
-            Movement
-          </button>
+          {FILTERS.map((filter) => (
+            <button
+              key={filter.value}
+              type="button"
+              className={specialty === filter.value ? "selected" : ""}
+              aria-pressed={specialty === filter.value}
+              onClick={() => setSpecialty(filter.value)}
+            >
+              {filter.label}
+            </button>
+          ))}
         </div>
 
         {loading && <p role="status">Loading coaches...</p>}
@@ -106,19 +126,14 @@ export default function CoachCatalog({ coaches, loading, error }) {
         <div className="grid">
           {!loading &&
             !error &&
-            coaches.map((coach, index) => (
-              <article
-                className="profile"
-                key={
-                  coach.id ??
-                  `${coach.first_name}-${coach.last_name}-${index}`
-                }
-              >
+            filteredCoaches.map((coach) => (
+              <article className="profile" key={coach.id}>
                 {coach.img_url ? (
                   <img
                     className="coach-photo"
                     src={coach.img_url}
                     alt={`${coach.first_name} ${coach.last_name}`}
+                    loading="lazy"
                   />
                 ) : (
                   <span className="avatar">
@@ -137,6 +152,10 @@ export default function CoachCatalog({ coaches, loading, error }) {
                   <span className="muted">{coach.location}</span>
 
                   <p>{coach.specialization}</p>
+
+                  {coach.description && (
+                    <p className="muted">{coach.description}</p>
+                  )}
 
                   {coach.hourly_rate != null && (
                     <div className="metric">
@@ -159,8 +178,12 @@ export default function CoachCatalog({ coaches, loading, error }) {
             ))}
         </div>
 
-        {!loading && !error && coaches.length === 0 && (
-          <p className="muted">No coaches found.</p>
+        {!loading && !error && filteredCoaches.length === 0 && (
+          <p className="muted">
+            {coaches.length === 0
+              ? "No coaches available yet."
+              : "No coaches match your search and specialty filter."}
+          </p>
         )}
       </main>
     </section>
