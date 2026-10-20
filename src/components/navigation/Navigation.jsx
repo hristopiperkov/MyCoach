@@ -5,12 +5,14 @@ import supabase from "../../supabase";
 
 export default function Navigation({ compact = false }) {
   const { user, loading, error: authError } = useAuth();
+
   const [loggingOut, setLoggingOut] = useState(false);
   const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
-  const activeClass = ({ isActive }) => (isActive ? "selected" : "");
-  const isCoach = user?.user_metadata?.role === "Coach";
+  const activeClass = ({ isActive }) =>
+    isActive ? "selected" : "";
 
   async function handleLogout() {
     if (loggingOut) return;
@@ -27,11 +29,13 @@ export default function Navigation({ compact = false }) {
         scope: "local",
       });
 
-      if (logoutError) throw logoutError;
+      if (logoutError) {
+        throw logoutError;
+      }
 
       navigate("/posts", { replace: true });
-    } catch (error) {
-      setError(error.message || "Logout failed. Please try again.");
+    } catch (err) {
+      setError(err.message || "Logout failed. Please try again.");
     } finally {
       setLoggingOut(false);
     }
@@ -49,13 +53,9 @@ export default function Navigation({ compact = false }) {
 
       {!loading && user && !compact && (
         <>
-          <NavLink to="/profile" className={activeClass}>My profile</NavLink>
-
-          {isCoach && (
-            <NavLink to="/workspace" className={activeClass}>
-              Workspace
-            </NavLink>
-          )}
+          <NavLink to="/profile" className={activeClass}>
+            My profile
+          </NavLink>
 
           <NavLink to="/my-posts" className={activeClass}>
             My posts
@@ -69,7 +69,7 @@ export default function Navigation({ compact = false }) {
 
       {loading ? (
         <span className="navigation-user" role="status">
-          Checking session...
+          Checking session…
         </span>
       ) : user ? (
         <button
@@ -78,7 +78,7 @@ export default function Navigation({ compact = false }) {
           onClick={handleLogout}
           disabled={loggingOut}
         >
-          {loggingOut ? "Logging out..." : "Logout"}
+          {loggingOut ? "Logging out…" : "Logout"}
         </button>
       ) : (
         <>

@@ -1,0 +1,166 @@
+/* Scoped to Community: other routes retain their existing styling. */
+.mycoach-app {
+  --accent: #d0ff58;
+  --accent-ink: #141b0c;
+  --border: #35404d;
+  --text: #f3f5f8;
+  --muted: #b8c2d1;
+  background: transparent;
+}
+.mycoach-app .fitness-backdrop {
+  background: linear-gradient(90deg, #091019c9, #091019eb 35%, #091019dc 72%, #091019ad), url('/images/community-gym.png') center / cover no-repeat;
+}
+.mycoach-app .site-header {
+  width: calc(100% - 64px);
+  max-width: 1440px;
+  min-height: 72px;
+  margin: 0 auto;
+  padding: 12px 28px;
+  border: 1px solid #35404d;
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: #101720df;
+}
+.mycoach-app .site-brand { font-size: 28px; gap: 18px; }
+.mycoach-app .site-monogram {
+  color: transparent;
+  background: linear-gradient(90deg, #fff 55%, #d0ff58 55%);
+  background-clip: text;
+  font-style: normal;
+  letter-spacing: -6px;
+  padding-right: 6px;
+}
+.mycoach-app .site-navigation { gap: 8px 26px; font-weight: 400; }
+.mycoach-app .site-navigation a.selected {
+  color: #d0ff58;
+  text-decoration: none;
+  box-shadow: 0 3px 0 #d0ff58;
+}
+.mycoach-app .navigation-logout {
+  border: 0; padding: 10px 6px; color: #c6cfdd; background: transparent;
+}
+.mycoach-app .navigation-logout:hover { color: #d0ff58; background: transparent; }
+.mycoach-app .demo { background: transparent; border: 0; padding: 22px; }
+.mycoach-app #community.community-page {
+  --accent: #d0ff58;
+  --accent-ink: #141b0c;
+  --border: #35404d;
+  --text: #f3f5f8;
+  --muted: #b8c2d1;
+  color: var(--text);
+}
+.mycoach-app #community .community-layout {
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr) 300px;
+  align-items: start;
+  gap: 28px;
+  width: min(1440px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 24px 0 36px;
+}
+#community .community-left, #community .community-feed, #community .community-right { min-width: 0; }
+#community .community-left, #community .community-right { display: grid; gap: 24px; }
+#community .community-menu, #community .community-info-card, #community .community-encouragement {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(130deg, #202934eb, #151c25f0);
+  box-shadow: 0 12px 32px #0002;
+}
+#community .community-menu-link {
+  display: flex; align-items: center; gap: 16px;
+  min-height: 70px; padding: 20px;
+  color: var(--muted); font-size: 16px;
+}
+#community .community-menu-link + .community-menu-link { border-top: 1px solid #ffffff0d; }
+#community .community-menu-link svg { flex-shrink: 0; }
+#community .community-menu-link:hover, #community .community-menu-link.selected { color: var(--accent); background: #cfff5804; }
+#community .community-menu-arrow { margin-left: auto; font-size: 28px; line-height: 1; }
+#community .community-encouragement {
+  padding: 48px 22px 26px;
+  background: linear-gradient(180deg, #141b2570, #141b25f5 48%), url('/images/community-gym.png') 15% 35% / auto 160%;
+}
+#community .community-encouragement h2, #community .community-card-body h2 {
+  font-size: 22px; line-height: 1.25; letter-spacing: -.5px; margin: 0 0 14px;
+}
+#community .community-encouragement p { margin: 0 0 12px; line-height: 1.65; color: var(--muted); }
+#community .community-encouragement p:last-child { margin-bottom: 0; }
+#community .community-heading { padding: 5px 0 0; margin-bottom: 16px; }
+#community .community-heading .sub { color: var(--accent); font-size: 12px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+#community .community-heading h1 { font: 800 clamp(36px, 3.8vw, 54px)/1.08 Arial, sans-serif; letter-spacing: -1.8px; margin: 12px 0 8px; }
+#community .community-heading p { margin: 0; font-size: 19px; line-height: 1.5; color: var(--muted); }
+#community .community-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0 24px; }
+.mycoach-app #community .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 46px; border: 1px solid transparent; padding: 11px 18px;
+  border-radius: 10px; background: var(--accent); color: var(--accent-ink);
+  font-weight: 700; line-height: 1.4;
+}
+.mycoach-app #community .btn:hover { filter: brightness(1.06); }
+.mycoach-app #community .btn.outline {
+  background: #10172040; color: #e8edf5; border-color: #9ca8b7; font-weight: 400;
+}
+#community .community-actions .btn > span { font-size: 25px; line-height: 1; }
+.mycoach-app #community .post-list { margin-top: 0; gap: 24px; }
+.mycoach-app #community .feedpost {
+  padding: 20px; margin: 0; border-radius: 12px;
+  border: 1px solid var(--border);
+  background: linear-gradient(125deg, #212a34eb, #151c25f2);
+  box-shadow: 0 15px 38px #0002;
+}
+#community .feedpost > .person .avatar { width: 44px; height: 44px; }
+#community .feedpost .person { gap: 12px; }
+#community .feedpost .person > div { min-width: 0; }
+#community .feedpost .person .pill { background: #333e4c; color: #bdc8d8; padding: 4px 10px; font-size: 12px; font-weight: 400; }
+#community .feedpost .muted { color: #aebaca; }
+#community .feedpost h2 { font-size: 25px; line-height: 1.3; margin: 20px 0 10px; }
+#community .feedpost h2 a:hover { color: var(--accent); }
+#community .post-list-content { color: var(--muted); font-size: 16px; line-height: 1.6; margin-bottom: 16px; }
+#community .post-list-image { width: 100%; max-height: 540px; object-fit: contain; border-radius: 10px; background: #111820; }
+#community .post-comments { margin-top: 20px; padding-top: 18px; border-color: var(--border); }
+#community .post-comments h3 { font-size: 16px; margin: 0 0 16px; }
+#community .comment-content { font-size: 14px; line-height: 1.6; color: #ced7e5; }
+#community .comment-editor { grid-template-columns: minmax(0, 1fr) auto; gap: 10px 14px; align-items: end; }
+#community .comment-editor label, #community .comment-editor > p { grid-column: 1 / -1; }
+#community .comment-editor textarea {
+  min-height: 66px; height: 66px; padding: 14px; border: 1px solid #435061;
+  border-radius: 10px; background: #1b253180; color: var(--text); resize: vertical;
+}
+#community .comment-editor button { min-height: 50px; align-self: end; margin: 0; }
+#community .community-card-image {
+  height: 180px; background-image: linear-gradient(#09101905, #09101930), url('/images/community-gym.png');
+  background-repeat: no-repeat; background-size: auto 185%;
+}
+#community .community-welcome-image { background-position: 0% 44%; }
+#community .community-coaches-image { background-position: 100% 76%; }
+#community .community-card-body { padding: 20px; }
+#community .community-card-body p { margin: 0 0 20px; line-height: 1.65; color: var(--muted); }
+#community .community-guidelines { margin: 0; padding: 0; list-style: none; color: var(--muted); line-height: 1.7; }
+#community .community-card-body .btn { width: 100%; }
+#community a:focus-visible, #community button:focus-visible, #community textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 1250px) {
+  .mycoach-app #community .community-layout { grid-template-columns: 200px minmax(0, 1fr) 250px; gap: 20px; width: calc(100% - 40px); }
+  #community .community-menu-link { gap: 10px; padding: 18px 14px; font-size: 14px; }
+  .mycoach-app .site-navigation { gap: 6px 14px; }
+}
+@media (max-width: 1050px) {
+  .mycoach-app #community .community-layout { grid-template-columns: 200px minmax(0, 1fr); }
+  #community .community-right { grid-column: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+@media (max-width: 760px) {
+  .mycoach-app .site-header { width: calc(100% - 24px); padding: 16px; }
+  .mycoach-app #community .community-layout { width: calc(100% - 24px); grid-template-columns: minmax(0, 1fr); gap: 22px; padding-top: 20px; }
+  #community .community-menu { display: flex; overflow-x: auto; }
+  #community .community-menu-link { flex: 1 0 auto; min-height: 54px; justify-content: center; padding: 12px; font-size: 13px; white-space: nowrap; }
+  #community .community-menu-link + .community-menu-link { border-top: 0; border-left: 1px solid #ffffff0d; }
+  #community .community-menu-arrow, #community .community-encouragement { display: none; }
+  #community .community-heading p { font-size: 16px; }
+  #community .community-right { grid-column: auto; }
+  .mycoach-app #community .feedpost { padding: 16px; }
+}
+@media (max-width: 480px) {
+  #community .community-right { grid-template-columns: minmax(0, 1fr); }
+  #community .community-actions .btn { font-size: 13px; padding: 10px 12px; }
+  #community .comment-editor { grid-template-columns: minmax(0, 1fr); }
+  #community .comment-editor button { justify-self: end; }
+}

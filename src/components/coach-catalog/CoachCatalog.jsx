@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+
 import "./CoachCatalog.css";
 
 const FILTERS = [
@@ -60,10 +61,7 @@ export default function CoachCatalog({
   const normalizedSearch = search.trim().toLowerCase();
 
   const filteredCoaches = coaches.filter((coach) => {
-    const fullName = [
-      coach.first_name,
-      coach.last_name,
-    ]
+    const fullName = [coach.first_name, coach.last_name]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
@@ -93,10 +91,7 @@ export default function CoachCatalog({
   }
 
   return (
-    <section
-      id="wellness"
-      className="concept dark active"
-    >
+    <section id="wellness" className="concept dark active">
       <main className="wellness">
         <div className="hero">
           <div>
@@ -127,20 +122,6 @@ export default function CoachCatalog({
             <p className="muted">
               Strength · Nutrition · Movement · Mindset
             </p>
-          </div>
-
-          <div className="heroart">
-            <div className="sun" aria-hidden="true"></div>
-            <div className="hill" aria-hidden="true"></div>
-            <div className="hill two" aria-hidden="true"></div>
-
-            <div className="floating">
-              <span className="avatar" aria-hidden="true">
-                SK
-              </span>
-
-              <b>Support that meets you where you are.</b>
-            </div>
           </div>
         </div>
 
@@ -207,9 +188,8 @@ export default function CoachCatalog({
                     .join(" ") || "Coach";
 
                 const initials =
-                  `${coach.first_name?.[0] || ""}${
-                    coach.last_name?.[0] || ""
-                  }`.toUpperCase() || "MC";
+                  `${coach.first_name?.[0] || ""}${coach.last_name?.[0] || ""
+                    }`.toUpperCase() || "MC";
 
                 return (
                   <article className="profile" key={coach.id}>

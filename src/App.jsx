@@ -3,12 +3,10 @@ import { Navigate, Route, Routes, useLocation } from "react-router";
 import useAuth from "./hooks/useAuth";
 import ProtectedRoute from "./components/guards/ProtectedRoute";
 import GuestRoute from "./components/guards/GuestRoute";
-import CoachRoute from "./components/guards/CoachRoute";
 import Header from "./components/header/Header";
 import Community from "./components/community/Community";
 import CoachCatalog from "./components/coach-catalog/CoachCatalog";
 import CoachDetails from "./components/coach-details/CoachDetails";
-import Workspace from "./components/coach-workspace/Workspace";
 import Profile from "./components/profile/Profile";
 import CreatePost from "./components/create-post/CreatePost";
 import MyPosts from "./components/my-posts/MyPosts";
@@ -116,7 +114,6 @@ export default function App() {
         <Route path="/" element={<Navigate to="/posts" replace />} />
 
         <Route path="/posts" element={<Community />} />
-
         <Route path="/posts/:postId" element={<PostDetails />} />
 
         <Route
@@ -144,14 +141,8 @@ export default function App() {
           />
 
           <Route path="/posts/new" element={<CreatePost />} />
-
           <Route path="/posts/:postId/edit" element={<EditPost />} />
-
           <Route path="/my-posts" element={<MyPosts />} />
-
-          <Route element={<CoachRoute />}>
-            <Route path="/workspace" element={<Workspace />} />
-          </Route>
         </Route>
 
         <Route element={<GuestRoute />}>

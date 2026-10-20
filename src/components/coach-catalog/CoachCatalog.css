@@ -1,7 +1,31 @@
-/* Larger portraits, scoped to the coach catalog. */
 .mycoach-app #wellness .profile > .coach-photo,
-.mycoach-app #wellness .profile > .avatar { height: 380px; width: 100%; object-fit: cover; object-position: center 25%; }
+.mycoach-app #wellness .profile > .avatar {
+  height: 380px;
+  width: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+}
+
+.mycoach-app #wellness .hero {
+  grid-template-columns: 1fr;
+  text-align: center;
+  justify-items: center;
+}
+
+.mycoach-app #wellness .hero > div {
+  width: 100%;
+  max-width: 900px;
+}
+
+.mycoach-app #wellness .hero p {
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @media (max-width: 600px) {
   .mycoach-app #wellness .profile > .coach-photo,
-  .mycoach-app #wellness .profile > .avatar { height: 320px; }
+  .mycoach-app #wellness .profile > .avatar {
+    height: 320px;
+  }
 }
