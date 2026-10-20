@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router";
+import { Navigate, Route, Routes, useLocation } from "react-router";
 import useAuth from "./hooks/useAuth";
 import ProtectedRoute from "./components/guards/ProtectedRoute";
 import GuestRoute from "./components/guards/GuestRoute";
@@ -7,6 +7,7 @@ import CoachRoute from "./components/guards/CoachRoute";
 import Header from "./components/header/Header";
 import Community from "./components/community/Community";
 import CoachCatalog from "./components/coach-catalog/CoachCatalog";
+import CoachDetails from "./components/coach-details/CoachDetails";
 import Workspace from "./components/coach-workspace/Workspace";
 import Profile from "./components/profile/Profile";
 import CreatePost from "./components/create-post/CreatePost";
@@ -22,11 +23,11 @@ export default function App() {
   const { user } = useAuth();
   const { pathname } = useLocation();
 
-  const isAuthPage = pathname === "/login" || pathname === "/register";
-
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const isAuthPage = pathname === "/login" || pathname === "/register";
 
   useEffect(() => {
     const controller = new AbortController();
@@ -39,7 +40,7 @@ export default function App() {
         const apiKey = import.meta.env.VITE_API_KEY;
 
         if (!apiKey) {
-          throw new Error("Missing VITE_API_KEY in .env.local.");
+          throw new Error("The database API key is not configured.");
         }
 
         const response = await fetch(
@@ -65,9 +66,9 @@ export default function App() {
         if (!controller.signal.aborted) {
           setUsers(result);
         }
-      } catch (error) {
+      } catch (err) {
         if (!controller.signal.aborted) {
-          setError(error.message || "Could not load members.");
+          setError(err.message || "Could not load members.");
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -92,7 +93,9 @@ export default function App() {
       }
 
       return currentUsers.map((member) =>
-        member.id === updatedProfile.id ? updatedProfile : member
+        member.id === updatedProfile.id
+          ? { ...member, ...updatedProfile }
+          : member
       );
     });
   }
@@ -127,6 +130,8 @@ export default function App() {
           }
         />
 
+        <Route path="/coaches/:coachId" element={<CoachDetails />} />
+
         <Route element={<ProtectedRoute />}>
           <Route
             path="/profile"
@@ -139,7 +144,9 @@ export default function App() {
           />
 
           <Route path="/posts/new" element={<CreatePost />} />
+
           <Route path="/posts/:postId/edit" element={<EditPost />} />
+
           <Route path="/my-posts" element={<MyPosts />} />
 
           <Route element={<CoachRoute />}>
@@ -174,7 +181,7 @@ export default function App() {
           id="closemodal"
           type="button"
           onClick={(event) =>
-            event.currentTarget.closest("dialog")?.close()
+            event.currentTarget.closest("dialog").close()
           }
         >
           Close

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import "./CoachCatalog.css";
 
 const FILTERS = [
@@ -9,39 +10,99 @@ const FILTERS = [
 ];
 
 const SPECIALTY_KEYWORDS = {
-  strength: ["strength", "weightlifting", "bodybuilding", "powerlifting"],
+  strength: [
+    "strength",
+    "weightlifting",
+    "bodybuilding",
+    "powerlifting",
+  ],
   nutrition: ["nutrition", "diet", "meal"],
-  movement: ["movement", "mobility", "yoga", "pilates", "flexibility"],
+  movement: [
+    "movement",
+    "mobility",
+    "yoga",
+    "pilates",
+    "flexibility",
+  ],
 };
 
-export default function CoachCatalog({ coaches, loading, error }) {
+function formatRate(rate, currency) {
+  if (rate === null || rate === undefined || rate === "") {
+    return "Rate not provided";
+  }
+
+  const amount = Number(rate);
+
+  if (!Number.isFinite(amount)) {
+    return "Rate not provided";
+  }
+
+  try {
+    return `${new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: currency || "EUR",
+      currencyDisplay: "narrowSymbol",
+      maximumFractionDigits: 2,
+    }).format(amount)} / hour`;
+  } catch {
+    return `${amount} ${currency || "EUR"} / hour`;
+  }
+}
+
+export default function CoachCatalog({
+  coaches = [],
+  loading = false,
+  error = "",
+}) {
   const [search, setSearch] = useState("");
-  const [specialty, setSpecialty] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState("all");
+
+  const normalizedSearch = search.trim().toLowerCase();
 
   const filteredCoaches = coaches.filter((coach) => {
-    const name = `${coach.first_name ?? ""} ${coach.last_name ?? ""}`;
-    const specialization = (coach.specialization ?? "").toLowerCase();
-    const searchableText = `${name} ${specialization}`.toLowerCase();
+    const fullName = [
+      coach.first_name,
+      coach.last_name,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
 
-    const matchesSearch = searchableText.includes(
-      search.trim().toLowerCase()
-    );
+    const specialization = (
+      coach.specialization || ""
+    ).toLowerCase();
 
-    const matchesSpecialty =
-      specialty === "all" ||
-      SPECIALTY_KEYWORDS[specialty].some((keyword) =>
+    const matchesSearch =
+      fullName.includes(normalizedSearch) ||
+      specialization.includes(normalizedSearch);
+
+    const matchesFilter =
+      selectedFilter === "all" ||
+      SPECIALTY_KEYWORDS[selectedFilter].some((keyword) =>
         specialization.includes(keyword)
       );
 
-    return matchesSearch && matchesSpecialty;
+    return matchesSearch && matchesFilter;
   });
 
+  function scrollToCoaches() {
+    document.getElementById("coachlist")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
   return (
-    <section id="wellness" className="concept dark active">
+    <section
+      id="wellness"
+      className="concept dark active"
+    >
       <main className="wellness">
         <div className="hero">
           <div>
-            <span className="sub">A coach for your kind of journey</span>
+            <span className="sub">
+              A coach for your kind of journey
+            </span>
 
             <h1 style={{ marginTop: "20px" }}>
               Find your person.
@@ -50,19 +111,15 @@ export default function CoachCatalog({ coaches, loading, error }) {
             </h1>
 
             <p>
-              Connect with coaches who listen, understand your goals, and
-              help you build a healthier everyday life.
+              Connect with coaches who listen, understand your goals,
+              and help you build a healthier everyday life.
             </p>
 
             <button
               className="btn"
               id="browse"
               type="button"
-              onClick={() =>
-                document.getElementById("coachlist")?.scrollIntoView({
-                  behavior: "smooth",
-                })
-              }
+              onClick={scrollToCoaches}
             >
               Meet your coach ↗
             </button>
@@ -72,13 +129,16 @@ export default function CoachCatalog({ coaches, loading, error }) {
             </p>
           </div>
 
-          <div className="heroart" aria-label="Fitness and active lifestyle">
-            <div className="sun"></div>
-            <div className="hill"></div>
-            <div className="hill two"></div>
+          <div className="heroart">
+            <div className="sun" aria-hidden="true"></div>
+            <div className="hill" aria-hidden="true"></div>
+            <div className="hill two" aria-hidden="true"></div>
 
             <div className="floating">
-              <span className="avatar">SK</span>
+              <span className="avatar" aria-hidden="true">
+                SK
+              </span>
+
               <b>Support that meets you where you are.</b>
             </div>
           </div>
@@ -86,7 +146,10 @@ export default function CoachCatalog({ coaches, loading, error }) {
 
         <div className="sectionhead" id="coachlist">
           <div>
-            <span className="sub">Real people. Personal support.</span>
+            <span className="sub">
+              Real people. Personal support.
+            </span>
+
             <h2>Discover your next coach</h2>
           </div>
 
@@ -94,28 +157,39 @@ export default function CoachCatalog({ coaches, loading, error }) {
             className="search"
             id="coachsearch"
             type="search"
-            aria-label="Search coaches"
+            aria-label="Search coaches by name or specialty"
             placeholder="Search name or specialty…"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
         </div>
 
-        <div className="chips" aria-label="Filter coach specialty">
+        <div
+          className="chips"
+          role="group"
+          aria-label="Filter coach specialty"
+        >
           {FILTERS.map((filter) => (
             <button
               key={filter.value}
               type="button"
-              className={specialty === filter.value ? "selected" : ""}
-              aria-pressed={specialty === filter.value}
-              onClick={() => setSpecialty(filter.value)}
+              className={
+                selectedFilter === filter.value ? "selected" : ""
+              }
+              data-filter={filter.value}
+              aria-pressed={selectedFilter === filter.value}
+              onClick={() => setSelectedFilter(filter.value)}
             >
               {filter.label}
             </button>
           ))}
         </div>
 
-        {loading && <p role="status">Loading coaches...</p>}
+        {loading && (
+          <p className="muted" role="status">
+            Loading coaches…
+          </p>
+        )}
 
         {error && (
           <p className="errorbox" role="alert">
@@ -123,67 +197,89 @@ export default function CoachCatalog({ coaches, loading, error }) {
           </p>
         )}
 
-        <div className="grid">
-          {!loading &&
-            !error &&
-            filteredCoaches.map((coach) => (
-              <article className="profile" key={coach.id}>
-                {coach.img_url ? (
-                  <img
-                    className="coach-photo"
-                    src={coach.img_url}
-                    alt={`${coach.first_name} ${coach.last_name}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="avatar">
-                    {coach.first_name?.[0]}
-                    {coach.last_name?.[0]}
-                  </span>
-                )}
+        {!loading && !error && (
+          <>
+            <div className="grid">
+              {filteredCoaches.map((coach) => {
+                const fullName =
+                  [coach.first_name, coach.last_name]
+                    .filter(Boolean)
+                    .join(" ") || "Coach";
 
-                <div className="body">
-                  <span className="pill">{coach.role}</span>
+                const initials =
+                  `${coach.first_name?.[0] || ""}${
+                    coach.last_name?.[0] || ""
+                  }`.toUpperCase() || "MC";
 
-                  <h3>
-                    {coach.first_name} {coach.last_name}
-                  </h3>
+                return (
+                  <article className="profile" key={coach.id}>
+                    {coach.img_url ? (
+                      <img
+                        className="coach-photo"
+                        src={coach.img_url}
+                        alt={fullName}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span
+                        className="avatar"
+                        role="img"
+                        aria-label={fullName}
+                      >
+                        {initials}
+                      </span>
+                    )}
 
-                  <span className="muted">{coach.location}</span>
+                    <div className="body">
+                      <span className="pill">{coach.role}</span>
 
-                  <p>{coach.specialization}</p>
+                      <h3>{fullName}</h3>
 
-                  {coach.description && (
-                    <p className="muted">{coach.description}</p>
-                  )}
+                      <span className="muted">
+                        {coach.location?.trim() ||
+                          "Location not provided"}
+                      </span>
 
-                  {coach.hourly_rate != null && (
-                    <div className="metric">
-                      <b>
-                        {new Intl.NumberFormat("en-GB", {
-                          style: "currency",
-                          currency: coach.currency || "EUR",
-                          currencyDisplay: "narrowSymbol",
-                        }).format(Number(coach.hourly_rate))}
-                        {" / hour"}
-                      </b>
+                      <p>
+                        {coach.specialization?.trim() ||
+                          "Specialties not provided"}
+                      </p>
+
+                      {coach.description?.trim() && (
+                        <p className="muted">
+                          {coach.description}
+                        </p>
+                      )}
+
+                      <div className="metric">
+                        <b>
+                          {formatRate(
+                            coach.hourly_rate,
+                            coach.currency
+                          )}
+                        </b>
+                      </div>
+
+                      <Link
+                        className="btn"
+                        to={`/coaches/${coach.id}`}
+                      >
+                        Meet {coach.first_name || "coach"} ↗
+                      </Link>
                     </div>
-                  )}
+                  </article>
+                );
+              })}
+            </div>
 
-                  <button className="btn" type="button">
-                    Meet {coach.first_name} ↗
-                  </button>
-                </div>
-              </article>
-            ))}
-        </div>
-
-        {!loading && !error && filteredCoaches.length === 0 && (
-          <p className="muted">
-            {coaches.length === 0
-              ? "No coaches available yet."
-              : "No coaches match your search and specialty filter."}
-          </p>
+            {filteredCoaches.length === 0 && (
+              <p className="muted" role="status">
+                {coaches.length === 0
+                  ? "No coaches are available yet."
+                  : "No coaches match your search and selected specialty."}
+              </p>
+            )}
+          </>
         )}
       </main>
     </section>
