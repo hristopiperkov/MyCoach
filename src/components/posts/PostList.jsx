@@ -4,7 +4,6 @@ import supabase from "../../supabase";
 import useAuth from "../../hooks/useAuth";
 import Comments from "../comments/Comments";
 import "./PostList.css";
-
 export default function PostList({ authorId = null }) {
   const { user } = useAuth();
 

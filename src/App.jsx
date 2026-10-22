@@ -102,9 +102,8 @@ export default function App() {
 
   return (
     <div
-      className={`mycoach-app ${
-        isAuthPage ? "auth-mode" : "content-mode"
-      }`}
+      className={`mycoach-app ${isAuthPage ? "auth-mode" : "content-mode"
+        }`}
     >
       <div className="fitness-backdrop" aria-hidden="true"></div>
 
@@ -156,28 +155,6 @@ export default function App() {
       <footer className="demo">
         MyCoach · Move better. Live better.
       </footer>
-
-      <div
-        className="notice"
-        role="status"
-        aria-live="polite"
-      ></div>
-
-      <dialog className="modal" id="details">
-        <h2 id="dialogtitle"></h2>
-        <div id="dialogbody"></div>
-
-        <button
-          className="btn outline"
-          id="closemodal"
-          type="button"
-          onClick={(event) =>
-            event.currentTarget.closest("dialog").close()
-          }
-        >
-          Close
-        </button>
-      </dialog>
     </div>
   );
 }

@@ -5,12 +5,12 @@ const apiKey = import.meta.env.VITE_API_KEY;
 
 const supabase = apiKey
   ? createClient(supabaseUrl, apiKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-      },
-    })
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  })
   : null;
 
 export default supabase;

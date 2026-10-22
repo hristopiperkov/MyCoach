@@ -5,7 +5,6 @@ import "./Profile.css";
 
 const SPECIALTIES = ["Strength", "Nutrition", "Movement"];
 const CURRENCIES = ["EUR", "USD", "GBP", "BGN"];
-
 const profileFields = `
   id,
   first_name,

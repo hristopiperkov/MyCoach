@@ -4,42 +4,43 @@ import supabase from "../supabase";
 
 export default function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(Boolean(supabase));
+  const [error, setError] = useState(
+    supabase ? "" : "Missing VITE_API_KEY in .env.local."
+  );
 
   useEffect(() => {
-    if (!supabase) {
-      setError("Missing VITE_API_KEY in .env.local.");
-      setLoading(false);
-      return;
-    }
+    if (!supabase) return;
 
     let active = true;
     let receivedAuthEvent = false;
 
-    const { data: { subscription } } =
-      supabase.auth.onAuthStateChange((_event, nextSession) => {
-        if (!active) return;
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (!active) return;
 
-        receivedAuthEvent = true;
-        setSession(nextSession);
-        setError("");
-        setLoading(false);
-      });
+      receivedAuthEvent = true;
+      setSession(nextSession);
+      setError("");
+      setLoading(false);
+    });
 
-    supabase.auth.getSession()
-      .then(({ data, error }) => {
+    supabase.auth
+      .getSession()
+      .then(({ data, error: sessionError }) => {
         if (!active || receivedAuthEvent) return;
 
-        if (error) throw error;
+        if (sessionError) throw sessionError;
 
         setSession(data.session);
+        setError("");
         setLoading(false);
       })
-      .catch((error) => {
+      .catch((err) => {
         if (!active || receivedAuthEvent) return;
 
-        setError(error.message);
+        setError(err.message || "Could not restore your session.");
         setLoading(false);
       });
 

@@ -29,12 +29,10 @@ body {
   pointer-events: none;
   opacity: 1;
   background:
-    linear-gradient(
-      180deg,
+    linear-gradient(180deg,
       #070c1220 0%,
       #070c1230 35%,
-      #070c12c9 100%
-    ),
+      #070c12c9 100%),
     url("/images/athletes-background.png") center top / cover no-repeat;
 }
 
@@ -202,7 +200,7 @@ body {
   object-fit: cover;
 }
 
-.mycoach-app .profile > .avatar {
+.mycoach-app .profile>.avatar {
   width: 100%;
   height: 230px;
   border-radius: 0;
