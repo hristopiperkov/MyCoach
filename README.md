@@ -1,654 +1,200 @@
 # MyCoach
 
-MyCoach is a React single-page application for coaches and people interested
-in health, fitness, and an active lifestyle.
+A React single-page application where coaches and clients share fitness posts, discuss active living, and discover coaches.
 
-Members can share posts, participate in discussions, discover coaches, and
-manage their profiles. Coaches can present their specialties, experience,
-location, and hourly rates.
+Educational project for the [SoftUni React course](https://softuni.bg/modules/153/react-septemvri-2026/1555).
 
-## Live Demo
+**Demo Link:** To be added after deployment.
 
-**Deployment URL:** To be added after deployment.
+**Repository:** https://github.com/hristopiperkov/MyCoach
 
-## Repository
+## Documentation
 
-https://github.com/hristopiperkov/MyCoach
+### Architecture
 
-## Technologies
+Built with React, Vite, React Router, and Supabase.
 
-- React
-- Vite
-- React Router
-- JavaScript
-- Supabase Authentication
-- Supabase PostgreSQL and REST API
-- Supabase JavaScript SDK
-- CSS and Tailwind CSS
-- ESLint
+- `components/` — pages, reusable UI, and route guards.
+- `contexts/` — shared authentication state.
+- `hooks/` — reusable authentication and post-loading logic.
+- `services/` — post requests and validation.
+- `App.jsx` — routes and shared member data.
+- `supabase.js` and `request.js` — backend communication.
+- External CSS files — shared theme and component styling.
 
-## Main Features
+Supabase provides authentication, PostgreSQL storage, and Row Level Security (RLS).
 
-- Registration with Coach or Client role selection.
-- Login, logout, and persistent authentication sessions.
-- Protected routes and guest-only authentication pages.
-- Profile editing with photo URLs and location.
-- Coach specialties, descriptions, hourly rates, and currencies.
-- Client fitness goals.
-- Community posts with full CRUD functionality.
-- My posts page.
-- Inline comments and deletion of owned comments.
-- Coach search, specialty filters, and individual coach profiles.
-- Responsive layouts.
-- Form validation and loading, error, and empty states.
+## Installation
 
-## Installation and Local Setup
-
-### Prerequisites
-
-- Node.js compatible with the Vite version in `package.json`.
-- npm.
-- Access to the configured Supabase project.
-
-### 1. Clone the Repository
+Requires Node.js compatible with the project's Vite version and npm.
 
 ```bash
 git clone https://github.com/hristopiperkov/MyCoach.git
 cd MyCoach
-```
-
-### 2. Install Dependencies
-
-```bash
 npm ci
 ```
 
-### 3. Configure Environment Variables
-
-Create `.env.local` in the project root, next to `package.json`:
+Create `.env.local` in the project root:
 
 ```env
 VITE_API_KEY=your_supabase_publishable_key
 ```
 
-Use the publishable key for the Supabase project configured in the source.
-
-The project URL is configured in `src/supabase.js` and in direct API
-requests elsewhere in the application. When switching to another Supabase
-project, update all references to the previous project URL.
-
-Never use a Supabase service-role or secret key in frontend code.
-
-Variables prefixed with `VITE_` are included in the browser application.
-The environment file separates configuration from committed code; it does
-not make a frontend key secret. Supabase permissions and Row Level
-Security protect database access.
-
-Keep `.env.local` out of version control.
-
-### 4. Start the Development Server
+Use the publishable key belonging to the Supabase project configured in the source. A different backend requires its URL, tables, authentication trigger, and RLS policies to be configured.
 
 ```bash
 npm run dev
 ```
 
-Open the local URL printed in the terminal.
+Production build and preview:
 
-Restart the development server after changing environment variables.
-
-### Using a Different Supabase Project
-
-A new Supabase project requires the application's tables, foreign keys,
-registration trigger, grants, and Row Level Security policies.
-
-Changing the project URL and API key alone does not recreate the database.
-
-## Available Commands
-
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the development server |
-| `npm run lint` | Check the code with ESLint |
-| `npm run build` | Generate the production build in `dist` |
-| `npm run preview` | Preview the production build locally |
-
-## Project Structure
-
-```text
-public/
-  images/
-
-src/
-  components/
-    auth/
-    coach-catalog/
-    coach-details/
-    comments/
-    community/
-    create-post/
-    edit-post/
-    guards/
-    header/
-    login/
-    my-posts/
-    navigation/
-    page-not-found/
-    post-details/
-    posts/
-    profile/
-    register/
-  contexts/
-  hooks/
-  services/
-  App.jsx
-  main.jsx
-  request.js
-  supabase.js
-  index.css
-  styles.css
-  theme.css
+```bash
+npm run build
+npm run preview
 ```
-
-## Architecture Overview
-
-- `main.jsx` initializes React, the router, and the authentication provider.
-- `App.jsx` defines application routes and loads member information.
-- `AuthProvider` manages authentication state and session restoration.
-- `AuthContext` shares authentication state across the component tree.
-- `useAuth` provides access to the authentication context.
-- Route guards control access to private and guest-only pages.
-- `supabase.js` configures the shared Supabase client.
-- `request.js` provides a helper for HTTP requests.
-- `postService.js` contains post-related data operations and validation.
-- `usePost` manages loading an individual post.
-- `PostList` is reused by Community and My posts.
-- `Comments` is reused in the community feed and on post details pages.
-- External CSS files provide shared and component-specific styling.
 
 ## Functional Guide
 
 ### 1. Project Overview
 
-**Application Name:** MyCoach
+**Application Name:** MyCoach  
+**Application Category / Topic:** Health and fitness social network.
 
-**Application Category / Topic:** Social network for health, fitness,
-and active living.
-
-**Main Purpose:**
-
-MyCoach connects coaches and clients through a shared community.
-Members can publish posts, discuss their experiences, and discover
-coaches by specialty. Coaches can present their background and services,
-while clients can maintain a profile with their fitness goals.
+**Main Purpose:** MyCoach connects coaches and clients through posts and discussions. Users can discover coaches by specialty and maintain profiles with coaching information or fitness goals.
 
 ### 2. User Access & Permissions
 
-#### Guest (Not Authenticated)
+**Guest (Not Authenticated):**
+Guests can browse Community, posts, comments, the coach catalog, and coach details. Login and registration are available, but creating content and editing profiles require authentication.
 
-Guests can access:
+**Authenticated User:**
+Members can edit their own profile, create posts, view My posts, and add comments. Only authors can edit/delete their posts or delete their comments.
 
-- `/posts` — community feed.
-- `/posts/:postId` — individual post details.
-- `/coaches` — coach catalog.
-- `/coaches/:coachId` — individual coach profiles.
-- `/login` — login form.
-- `/register` — registration form.
-
-Public information includes posts, comments, author information, and
-coach profiles.
-
-Guests cannot create, edit, or delete posts, add or delete comments,
-or access profile editing and My posts.
-
-#### Authenticated User
-
-Authenticated members can:
-
-- Browse all public content.
-- Access `/profile` to edit their own profile.
-- Access `/my-posts` to view their own posts.
-- Access `/posts/new` to create a post.
-- Access `/posts/:postId/edit` for posts they authored.
-- Delete their own posts.
-- Add comments and delete their own comments.
-
-Coach profiles support specialties, a description, an hourly rate,
-and a currency. Client profiles support fitness goals.
-
-Both roles can publish posts and participate in discussions.
-
-Post edit and delete controls are available only to the author.
-The edit page also checks ownership when opened directly.
-
-Supabase Row Level Security policies restrict database changes to
-the appropriate owner.
+Coaches can set specialties, descriptions, locations, hourly rates, and currencies. Clients can provide fitness goals.
 
 ### 3. Authentication & Session Handling
 
-#### Authentication Flow
+**Authentication Flow:**
 
-1. When the application loads, `AuthProvider` initializes authentication
-   state and subscribes to Supabase authentication changes.
-2. It requests the current session using `supabase.auth.getSession()`.
-3. Route guards display a loading state while authentication is checked.
-4. Login sends the supplied email and password to Supabase Authentication.
-5. Registration creates an authentication account. A database trigger
-   creates a linked profile in `public.users`.
-6. Email confirmation is disabled for the current course-project setup.
-   Successful registration establishes the returned session.
-7. Authentication events update Context and the navigation controls.
-8. After authentication, the guest-route guard redirects the member to
-   a previously requested private route when available, or to Community.
-9. Logout signs out the current browser session and redirects to Community.
+1. On startup, `AuthProvider` checks the Supabase session and subscribes to authentication changes.
+2. Login authenticates the user. Registration creates an account and a linked `public.users` profile through a database trigger.
+3. Successful authentication updates Context and redirects to the requested private page or Community.
+4. Logout clears the current browser session and returns to Community.
 
-#### Session Persistence
+Email confirmation is disabled for this course project.
 
-The Supabase client is configured to persist sessions and refresh
-authentication tokens automatically.
-
-The SDK stores the session in browser local storage. React Context
-provides the current session, user, authentication loading state,
-and authentication error to components.
-
-After a page refresh, the SDK restores the saved session and
-`AuthProvider` updates Context.
-
-The authentication subscription is removed when the provider unmounts.
+**Session Persistence:**
+Supabase stores the session in local storage and refreshes tokens automatically. On refresh, `AuthProvider` restores authentication state through the SDK. Route guards wait for this check before redirecting.
 
 ### 4. Routing Structure
 
-#### Route Guards Logic
+**Route Guards Logic:**
+`ProtectedRoute` redirects guests to Login. `GuestRoute` redirects authenticated users away from Login and Register. Post editing additionally checks ownership.
 
-- Public routes are accessible to guests and authenticated members.
-- `ProtectedRoute` checks authentication before rendering private routes.
-  Guests are redirected to Login.
-- `GuestRoute` redirects authenticated members away from Login and Register.
-- The post-edit component checks whether the current user owns the post.
+**Main Routes:**
+The application has ten page routes, a root redirect, and a fallback.
 
-#### Main Routes
-
-There are ten named page routes, plus a root redirect and a fallback route.
-
-| Route | Purpose | Access |
+| Route | Page | Access |
 | --- | --- | --- |
-| `/` | Redirect to `/posts` | Public |
-| `/posts` | Community feed | Public |
-| `/posts/:postId` | Post details and comments | Public |
+| `/` | Redirect to Community | Public |
+| `/posts` | Community | Public |
+| `/posts/:postId` | Post details | Public |
 | `/coaches` | Coach catalog | Public |
 | `/coaches/:coachId` | Coach details | Public |
 | `/login` | Login | Guests |
-| `/register` | Registration | Guests |
-| `/profile` | Edit own profile | Authenticated |
+| `/register` | Register | Guests |
+| `/profile` | Edit profile | Authenticated |
 | `/my-posts` | Own posts | Authenticated |
 | `/posts/new` | Create post | Authenticated |
-| `/posts/:postId/edit` | Edit post | Post author |
+| `/posts/:postId/edit` | Edit post | Author |
 | `*` | Page not found | Public |
 
-#### Nested & Parameterized Routes
-
-Private routes are nested beneath a pathless `ProtectedRoute`.
-Login and Register are nested beneath a pathless `GuestRoute`.
-
-Both guards render their permitted child routes through `Outlet`.
-
-Parameterized routes are:
-
-- `/posts/:postId`
-- `/posts/:postId/edit`
-- `/coaches/:coachId`
-
-Components read the parameters with `useParams` and fetch the
-corresponding database records.
+**Nested & Parameterized Routes:**
+Private and guest-only routes are nested under pathless guards using `Outlet`. Post details, post editing, and coach details read their identifiers through `useParams`.
 
 ### 5. List → Details Flow
 
-#### Catalog / List Page
+**Catalog / List Page:**
+Community displays posts newest first, including author information, text, optional images, and comments. My posts filters the list by author.
 
-Community displays posts fetched from Supabase, ordered from newest
-to oldest.
+The coach catalog displays profiles and rates, with name/specialty search and Strength, Nutrition, and Movement filters.
 
-Each post includes:
-
-- Author information.
-- Creation date.
-- Title and content.
-- An optional image.
-- Comments.
-
-My posts reuses `PostList` with an author filter.
-
-The coach catalog displays coach photos, names, locations, specialties,
-descriptions, and hourly rates.
-
-Users can search coaches by name or specialty and filter by Strength,
-Nutrition, or Movement. The search and specialty filter work together.
-
-#### Details Page
-
-Post titles and images use React Router `Link` components to navigate
-to `/posts/:postId`.
-
-The post details page reads `postId`, fetches the matching record,
-and displays its full information and comments. Authors also receive
-edit and delete controls.
-
-Each coach card has a Meet link leading to `/coaches/:coachId`.
-
-The coach details page reads `coachId` and fetches the matching
-Coach profile.
-
-Only the record identifier is passed through the URL. Record data is
-loaded from Supabase.
+**Details Page:**
+Clicking a post title or image opens its details through `Link`. Coach cards link to coach details. Each details page reads the record ID from the URL and fetches its data from Supabase.
 
 ### 6. Data Source & Backend
 
 **Backend Type:** Supabase Backend-as-a-Service.
 
-The application uses:
+Authentication uses Supabase Auth. Persistent data is accessed through REST requests and the Supabase SDK.
 
-- Supabase Authentication for accounts and sessions.
-- Supabase PostgreSQL for persistent data.
-- REST requests and the Supabase JavaScript SDK for communication.
-- Row Level Security for access restrictions.
+- `users` — profiles linked to authentication accounts.
+- `posts` — community posts linked to authors.
+- `comments` — comments linked to posts and authors.
 
-#### Main Tables
-
-| Table | Purpose |
-| --- | --- |
-| `users` | Member profiles linked to authentication accounts |
-| `posts` | Community posts linked to their authors |
-| `comments` | Comments linked to posts and authors |
-
-#### Relationships
-
-- `users.auth_user_id` references an account in `auth.users`.
-- `posts.author_id` references a profile's authentication user ID.
-- `comments.author_id` references a profile's authentication user ID.
-- `comments.post_id` references a post.
-
-A registration trigger creates the linked profile.
-Deleting a post also removes its related comments through the database
-relationship's cascading delete behavior.
-
-Data persists between visits. Fictional demonstration profiles are stored
-in the database and fetched through the API.
-
-Supabase hosts the backend; the React frontend is deployed separately.
+RLS restricts writes to authorized users. Deleting a post also deletes its related comments.
 
 ### 7. Data Operations (CRUD)
 
-The `posts` collection implements all four CRUD operations.
+The `posts` collection supports all four operations:
 
-#### Create (POST)
+- **Create (POST):** Authenticated users submit a validated title, content, and optional image URL. Success clears the form; the post appears when the feed is fetched.
+- **Read (GET):** Community fetches all posts, My posts filters by author, and Post details fetches one record.
+- **Update (PATCH):** Authors edit prefilled values. The request filters by post and author IDs, then redirects to details showing the updated data.
+- **Delete (DELETE):** Authors confirm deletion. The request filters by post and author IDs, then redirects to the refreshed My posts page.
 
-An authenticated member opens Create post and enters a title, content,
-and an optional image URL.
-
-The form trims and validates the input before inserting a record into
-Supabase. The database associates the post with the authenticated author.
-
-After success, the form displays feedback and clears its fields.
-The new post is fetched when the member opens Community or My posts.
-
-#### Read (GET)
-
-`PostList` fetches posts with their author information and displays them
-in Community.
-
-My posts applies an author filter.
-
-The post details page fetches a single record using its URL parameter.
-
-#### Update (PATCH)
-
-The author opens the edit page from their post's details.
-
-The form contains the existing values. After validation, the update
-request targets the post ID and author ID.
-
-After a successful update, the application navigates to the post details
-page, which loads the updated information.
-
-#### Delete (DELETE)
-
-The author selects Delete on the post details page and confirms the action.
-
-The request targets the post ID and author ID. After success, the
-application navigates to My posts, where the list is fetched again.
-
-Related comments are deleted through the database relationship.
-
-#### Additional Interaction: Comments
-
-Authenticated members can add comments associated with a post.
-
-After insertion, the returned comment is added to the current component's
-state. After deleting an owned comment, it is removed from state.
-
-These actions update the visible list without refreshing the entire page.
-
-Changes made in another browser require a new fetch. Realtime
-subscriptions are not implemented.
+Comments support creation and author-only deletion. Component state updates the visible comments immediately after successful requests.
 
 ### 8. Forms & Validation
 
-#### Forms Used
+**Forms Used:** Registration, login, profile editing, post creation/editing, and comment creation. The coach catalog also includes search/filter controls.
 
-- Registration.
-- Login.
-- Profile editing.
-- Post creation.
-- Post editing.
-- Comment creation.
-- Coach search and specialty filtering controls.
+Most forms use controlled inputs and React event handlers. Registration reads submitted values with `FormData`.
 
-Login, profile editing, post creation/editing, and comments use
-state-controlled inputs.
-
-React event handlers process input changes and submissions.
-
-Registration reads submitted values using `FormData` and handles
-submission through React's `onSubmit` event.
-
-#### Validation Rules
+**Validation Rules:**
 
 | Field | Rules |
 | --- | --- |
-| Post title | Required; trimmed; between 3 and 120 characters |
-| Post content | Required; trimmed; between 10 and 10,000 characters |
-| Post image URL | Optional; when supplied, must be an HTTP/HTTPS URL without whitespace |
-| Comment content | Required; trimmed; between 1 and 2,000 characters |
-| Registration password | At least 8 characters; must match the confirmation password |
-| First and last name | Required; cannot consist only of whitespace |
-| Profile photo URL | Optional; must use HTTP or HTTPS when supplied |
-| Hourly rate | Optional; when provided, must be a finite, non-negative number |
-| Currency | Must be one of the supported currency options |
+| Post title | Required, trimmed, 3–120 characters |
+| Post content | Required, trimmed, 10–10,000 characters |
+| Post image URL | Optional; HTTP/HTTPS URL without whitespace |
+| Comment | Required, trimmed, 1–2,000 characters |
+| Registration password | At least 8 characters; confirmation must match |
+| First and last name | Required; cannot contain only whitespace |
+| Hourly rate | Optional; finite, non-negative number |
 
-Validation messages are displayed in the interface.
-
-Forms prevent repeated submission while a request is pending.
+Validation errors are displayed, and submission is disabled while requests are pending.
 
 ### 9. React-Specific Techniques
 
-#### Hooks & Component Lifecycle
+**Hooks & Component Lifecycle:**
+`useState` manages forms, data, and interface states. `useEffect` fetches data and manages authentication subscriptions. Router hooks handle parameters and navigation. Custom hooks include `useAuth` and `usePost`.
 
-- `useState` stores form values, fetched records, loading states,
-  errors, and search/filter selections.
-- `useEffect` loads data and manages authentication subscriptions.
-- `useContext`, through `useAuth`, provides shared authentication state.
-- `useParams` reads post and coach identifiers.
-- `useNavigate` redirects after actions such as editing or deleting.
-- `useLocation` supports route-aware behavior and login redirects.
-- The custom `usePost` hook manages individual post loading and retries.
+For example, Coach details fetches data on mount, fetches again when `coachId` changes, and aborts the previous request during cleanup.
 
-Lifecycle example:
+**Context API:**
+`AuthContext` shares the user, session, loading state, and authentication error. Navigation, route guards, profiles, posts, and comments consume it through `useAuth`.
 
-1. When the coach details component mounts, its effect fetches a coach.
-2. If `coachId` changes, the effect fetches the newly selected coach.
-3. Before the effect reruns or the component unmounts, cleanup aborts
-   the previous request.
-
-`AuthProvider` also demonstrates cleanup by unsubscribing from
-authentication events when it unmounts.
-
-#### Context API
-
-`AuthContext` shares:
-
-- Current user.
-- Current session.
-- Authentication loading state.
-- Authentication error.
-
-Navigation, route guards, profile editing, posts, and comments access
-this state through `useAuth`.
-
-#### Component Styling
-
-The application uses external CSS files for shared and
-component-specific styling, including:
-
-- `styles.css`
-- `theme.css`
-- `Community.css`
-- `CoachCatalog.css`
-- `CoachDetails.css`
-- `Profile.css`
-- `Comments.css`
-
-Media queries adapt layouts to mobile screens.
-
-The interface uses a dark palette, lime accents, readable typography,
-and visible interactive controls.
+**Component Styling:**
+Shared and component-specific external CSS files provide the theme and responsive layouts.
 
 ### 10. Typical User Flow
 
-1. A visitor opens Community and browses posts and comments.
-2. They open Coaches, search or filter by specialty, and view a coach's
-   details.
-3. They register as a Client or Coach and complete their profile.
-4. They create a post and find it in Community or My posts.
-5. They open the post's details by clicking its title or image.
-6. They edit their own post or delete it after confirmation.
-7. They comment on another member's post from the feed or details page.
-8. They log out. Public browsing remains available, while protected
-   actions require login.
+1. Browse Community and discover coaches.
+2. Register or log in and complete a profile.
+3. Create a post and find it in Community or My posts.
+4. Open post details to edit or delete an owned post.
+5. Add comments to discussions.
+6. Log out and continue browsing public content.
 
 ### 11. Error & Edge Case Handling
 
-#### Authentication Errors
-
-Login and registration failures are displayed in the form.
-
-Authentication loading states prevent premature route redirects.
-Missing Supabase configuration produces an explanatory error.
-
-#### Network or Data Errors
-
-Data-loading components show loading indicators while requests
-are pending.
-
-Failed requests display an error message. Post lists and details views
-provide retry controls where implemented.
-
-Request cleanup prevents outdated responses from updating components
-after navigation.
-
-#### Empty or Missing Data States
-
-- Community displays a message when no posts exist.
-- My posts displays a message when the member has no posts.
-- Coach search displays a message when no coaches match.
-- Posts without comments invite the user to start the conversation.
-- Missing or invalid post and coach IDs display an unavailable/not-found
-  state.
-- Unknown routes display the Page not found component.
-- Profiles without a photo URL display initials.
-- Missing optional coach information displays explanatory fallback text.
-
-#### Ownership and Submission Errors
-
-Members cannot edit or delete another author's posts.
-Comments can be deleted only by their author; comment editing is
-not implemented.
-
-Update/delete operations report an error when the targeted post is
-unavailable or cannot be modified.
-
-Forms display submission errors and disable submission while saving.
-
-## Verification
-
-The following checks were performed manually during development:
-
-- Registration, login, logout, and session restoration.
-- Protected-route redirects.
-- Author-only post editing and deletion.
-- Author-only comment deletion.
-- Blocking comment creation for logged-out visitors.
-- Profile editing.
-- Post creation, reading, editing, and deletion.
-- Comment creation and deletion.
-- Coach search, filtering, and details.
-- Mobile layouts.
-- Validation and empty/error states.
-
-Code checks:
-
-```bash
-npm run lint
-npm run build
-```
-
-Both checks passed during the pre-deployment review.
-
-The production build reports a JavaScript bundle-size warning.
-This does not prevent the build from completing.
-
-Live-site verification remains part of deployment.
-
-## Deployment
-
-Supabase hosts the authentication and database services.
-The React frontend must be deployed to a static hosting provider.
-
-### Frontend Configuration
-
-| Setting | Value |
-| --- | --- |
-| Build command | `npm run build` |
-| Output directory | `dist` |
-| Environment variable | `VITE_API_KEY` |
-
-Configure the host to serve `index.html` for client-side application
-routes. This allows direct visits and refreshes on routes such as
-`/posts/:postId` and `/coaches/:coachId`.
-
-Configure Supabase authentication URL settings for the deployed frontend.
-
-### Deployment Checklist
-
-- Deploy the latest committed source.
-- Configure the frontend environment variable.
-- Configure SPA route fallback.
-- Update Supabase authentication URLs.
-- Verify public pages load while logged out.
-- Verify registration, login, logout, and session restoration.
-- Verify profile editing, posts CRUD, and comments.
-- Verify refreshing detail pages works.
-- Add the live frontend URL to this README.
-
-## Project Scope and Limitations
-
-MyCoach is an educational project.
-
-- Some profiles and content are fictional demonstration data.
-- Profile and post images use URLs; direct file uploads are not implemented.
-- Coach rates are informational. Payments and bookings are not implemented.
-- Training plans, session scheduling, and a coach workspace are outside
-  the current scope.
-- Comments update after the current user's actions; realtime updates
-  across different browsers are not implemented.
+- **Authentication errors:** Login and registration display failures; guards wait while authentication loads.
+- **Network or data errors:** Components display loading/error states, with retry controls where implemented.
+- **Empty data:** Lists display messages when no posts, comments, or matching coaches exist.
+- **Missing records:** Invalid or missing IDs display unavailable states; unknown routes show Page not found.
+- **Unauthorized actions:** Ownership checks and database policies restrict editing and deletion.
+- **Submission errors:** Forms display feedback and prevent repeated submission while saving.
 
 ## Author
 
