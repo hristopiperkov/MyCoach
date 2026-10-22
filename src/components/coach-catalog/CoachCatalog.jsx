@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router";
-
 import "./CoachCatalog.css";
 
 const FILTERS = [
