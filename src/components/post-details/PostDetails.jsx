@@ -1,3 +1,4 @@
+import useToast from "../../hooks/useToast";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import useAuth from "../../hooks/useAuth";
@@ -8,13 +9,13 @@ import "../posts/PostList.css";
 import "./PostDetails.css";
 
 export default function PostDetails() {
+  const toast = useToast();
   const { postId } = useParams();
   const { user } = useAuth();
   const { post, loading, error, retry } = usePost(postId);
   const navigate = useNavigate();
 
   const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState("");
 
   const isAuthor = !!user && user.id === post?.author_id;
 
@@ -24,13 +25,14 @@ export default function PostDetails() {
     if (!window.confirm("Delete this post permanently?")) return;
 
     setDeleting(true);
-    setDeleteError("");
+
 
     try {
       await deletePost(post.id, user.id);
+      toast.success("Post deleted.");
       navigate("/my-posts", { replace: true });
     } catch (error) {
-      setDeleteError(error.message || "Could not delete the post.");
+      toast.error(error.message || "Could not delete the post.");
     } finally {
       setDeleting(false);
     }
@@ -120,12 +122,6 @@ export default function PostDetails() {
                 {deleting ? "Deleting..." : "Delete post"}
               </button>
             </div>
-          )}
-
-          {deleteError && (
-            <p className="errorbox" role="alert">
-              {deleteError}
-            </p>
           )}
 
           <Comments

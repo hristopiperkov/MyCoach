@@ -1,3 +1,4 @@
+import useToast from "../../hooks/useToast";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import supabase from "../../supabase";
@@ -17,6 +18,7 @@ const commentFields = `
 `;
 
 export default function Comments({ postId }) {
+  const toast = useToast();
   const { user, loading: authLoading } = useAuth();
 
   const [comments, setComments] = useState([]);
@@ -29,8 +31,6 @@ export default function Comments({ postId }) {
   const [submitError, setSubmitError] = useState("");
 
   const [deletingId, setDeletingId] = useState(null);
-  const [deleteError, setDeleteError] = useState("");
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -88,8 +88,8 @@ export default function Comments({ postId }) {
     }
 
     setSubmitError("");
-    setDeleteError("");
-    setMessage("");
+
+
 
     const text = content.trim();
 
@@ -118,9 +118,9 @@ export default function Comments({ postId }) {
 
       setComments((currentComments) => [...currentComments, data]);
       setContent("");
-      setMessage("Comment added.");
+      toast.success("Comment added.");
     } catch (error) {
-      setSubmitError(error.message || "Could not add your comment.");
+      toast.error(error.message || "Could not add your comment.");
     } finally {
       setSaving(false);
     }
@@ -139,9 +139,8 @@ export default function Comments({ postId }) {
 
     if (!window.confirm("Delete this comment?")) return;
 
-    setDeleteError("");
     setSubmitError("");
-    setMessage("");
+
     setDeletingId(comment.id);
 
     try {
@@ -168,9 +167,9 @@ export default function Comments({ postId }) {
         currentComments.filter((item) => item.id !== comment.id)
       );
 
-      setMessage("Comment deleted.");
+      toast.success("Comment deleted.");
     } catch (error) {
-      setDeleteError(error.message || "Could not delete your comment.");
+      toast.error(error.message || "Could not delete your comment.");
     } finally {
       setDeletingId(null);
     }
@@ -270,12 +269,6 @@ export default function Comments({ postId }) {
           );
         })}
 
-      {deleteError && (
-        <p className="errorbox" role="alert">
-          {deleteError}
-        </p>
-      )}
-
       {authLoading ? (
         <p role="status">Checking session...</p>
       ) : user ? (
@@ -297,7 +290,7 @@ export default function Comments({ postId }) {
             value={content}
             onChange={(event) => {
               setContent(event.target.value);
-              setMessage("");
+
             }}
             disabled={formDisabled}
             required
@@ -323,12 +316,6 @@ export default function Comments({ postId }) {
             Log in
           </Link>{" "}
           to add a comment.
-        </p>
-      )}
-
-      {message && (
-        <p className="lime" role="status">
-          {message}
         </p>
       )}
     </section>

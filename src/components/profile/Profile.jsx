@@ -1,3 +1,4 @@
+import useToast from "../../hooks/useToast";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import supabase from "../../supabase";
@@ -27,13 +28,13 @@ function getSpecialties(value) {
 }
 
 export default function Profile({ onSaved }) {
+  const toast = useToast();
   const { user } = useAuth();
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -93,7 +94,6 @@ export default function Profile({ onSaved }) {
       [name]: value,
     }));
 
-    setMessage("");
   }
 
   function handleSpecialtyChange(event) {
@@ -114,7 +114,6 @@ export default function Profile({ onSaved }) {
       };
     });
 
-    setMessage("");
   }
 
   async function handleSubmit(event) {
@@ -123,7 +122,7 @@ export default function Profile({ onSaved }) {
     if (saving || !profile) return;
 
     setError("");
-    setMessage("");
+
 
     if (!supabase || !user?.id) {
       setError("Please log in to save your profile.");
@@ -203,9 +202,9 @@ export default function Profile({ onSaved }) {
 
       setProfile(data);
       onSaved?.(data);
-      setMessage("Profile saved successfully.");
+      toast.success("Profile saved successfully.");
     } catch (error) {
-      setError(error.message || "Could not save your profile.");
+      toast.error(error.message || "Could not save your profile.");
     } finally {
       setSaving(false);
     }
@@ -392,12 +391,6 @@ export default function Profile({ onSaved }) {
           {error && (
             <p role="alert" className="errorbox">
               {error}
-            </p>
-          )}
-
-          {message && (
-            <p role="status" className="lime">
-              {message}
             </p>
           )}
         </form>

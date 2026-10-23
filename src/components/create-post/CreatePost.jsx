@@ -1,15 +1,16 @@
+import useToast from "../../hooks/useToast";
 import { useState } from "react";
 import { Link } from "react-router";
 import supabase from "../../supabase";
 import "./CreatePost.css";
 
 export default function CreatePost() {
+  const toast = useToast();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -17,7 +18,7 @@ export default function CreatePost() {
     if (saving) return;
 
     setError("");
-    setMessage("");
+
 
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
@@ -70,9 +71,9 @@ export default function CreatePost() {
       setTitle("");
       setContent("");
       setImageUrl("");
-      setMessage("Your post was created successfully.");
+      toast.success("Your post was created successfully.");
     } catch (error) {
-      setError(error.message || "Could not create your post. Please try again.");
+      toast.error(error.message || "Could not create your post. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -96,7 +97,7 @@ export default function CreatePost() {
               value={title}
               onChange={(event) => {
                 setTitle(event.target.value);
-                setMessage("");
+
               }}
               minLength={3}
               maxLength={120}
@@ -111,7 +112,7 @@ export default function CreatePost() {
               value={content}
               onChange={(event) => {
                 setContent(event.target.value);
-                setMessage("");
+
               }}
               minLength={10}
               maxLength={10000}
@@ -128,7 +129,7 @@ export default function CreatePost() {
               value={imageUrl}
               onChange={(event) => {
                 setImageUrl(event.target.value);
-                setMessage("");
+
               }}
               placeholder="https://example.com/photo.jpg"
             />
@@ -141,12 +142,6 @@ export default function CreatePost() {
           {error && (
             <p className="errorbox" role="alert">
               {error}
-            </p>
-          )}
-
-          {message && (
-            <p className="lime" role="status">
-              {message}
             </p>
           )}
         </form>

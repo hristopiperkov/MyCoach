@@ -1,3 +1,4 @@
+import useToast from "../../hooks/useToast";
 import { useState } from "react";
 import { Link } from "react-router";
 import AuthLayout from "../auth/AuthLayout";
@@ -5,6 +6,7 @@ import request from "../../request";
 import supabase from "../../supabase";
 
 export default function Register() {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -90,6 +92,7 @@ export default function Register() {
           });
 
           if (sessionError) throw sessionError;
+          toast.success("Account created. Welcome to MyCoach!");
 
           // GuestRoute redirects when Auth Context receives the session.
         } catch {
@@ -104,7 +107,7 @@ export default function Register() {
         form.reset();
       }
     } catch (error) {
-      setError(error.message || "Registration failed. Please try again.");
+      toast.error(error.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }

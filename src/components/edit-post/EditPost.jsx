@@ -1,3 +1,4 @@
+import useToast from "../../hooks/useToast";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import useAuth from "../../hooks/useAuth";
@@ -6,6 +7,7 @@ import { updatePost, validatePost } from "../../services/postService";
 import "../post-details/PostDetails.css";
 
 function EditForm({ post, authorId }) {
+  const toast = useToast();
   const [values, setValues] = useState({ title: post.title, content: post.content, image_url: post.image_url || "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -18,12 +20,19 @@ function EditForm({ post, authorId }) {
     event.preventDefault();
     if (saving) return;
     setError("");
+    let validated;
     try {
-      const validated = validatePost(values);
+      validated = validatePost(values);
+    } catch (error) {
+      setError(error.message);
+      return;
+    }
+    try {
       setSaving(true);
       await updatePost(post.id, authorId, validated);
+      toast.success("Post updated.");
       navigate(`/posts/${post.id}`, { replace: true });
-    } catch (error) { setError(error.message || "Could not save changes."); }
+    } catch (error) { toast.error(error.message || "Could not save changes."); }
     finally { setSaving(false); }
   }
   return <section className="card"><h1>Edit post</h1><form onSubmit={save} aria-busy={saving}>

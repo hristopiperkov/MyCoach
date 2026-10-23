@@ -1,13 +1,15 @@
+import useToast from "../../hooks/useToast";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import supabase from "../../supabase";
 
 export default function Navigation({ compact = false }) {
+  const toast = useToast();
   const { user, loading, error: authError } = useAuth();
 
   const [loggingOut, setLoggingOut] = useState(false);
-  const [error, setError] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -17,7 +19,7 @@ export default function Navigation({ compact = false }) {
   async function handleLogout() {
     if (loggingOut) return;
 
-    setError("");
+
     setLoggingOut(true);
 
     try {
@@ -33,9 +35,10 @@ export default function Navigation({ compact = false }) {
         throw logoutError;
       }
 
+      toast.success("You are logged out.");
       navigate("/posts", { replace: true });
     } catch (err) {
-      setError(err.message || "Logout failed. Please try again.");
+      toast.error(err.message || "Logout failed. Please try again.");
     } finally {
       setLoggingOut(false);
     }
@@ -92,9 +95,9 @@ export default function Navigation({ compact = false }) {
         </>
       )}
 
-      {(error || authError) && (
+      {authError && (
         <span className="navigation-error" role="alert">
-          {error || authError}
+          {authError}
         </span>
       )}
     </nav>

@@ -1,9 +1,11 @@
+import useToast from "../../hooks/useToast";
 import { useState } from "react";
 import { Link } from "react-router";
 import AuthLayout from "../auth/AuthLayout";
 import supabase from "../../supabase";
 
 export default function Login() {
+  const toast = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,9 +34,10 @@ export default function Login() {
         });
 
       if (loginError) throw loginError;
+      toast.success("You are logged in.");
 
     } catch (error) {
-      setError(error.message || "Login failed. Please try again.");
+      toast.error(error.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
