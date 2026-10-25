@@ -38,13 +38,14 @@ cd MyCoach
 npm ci
 ```
 
-Create `.env.local` in the project root:
+Local development requires a `.env.local` file containing:
 
 ```env
 VITE_API_KEY=your_supabase_publishable_key
 ```
 
-Use the publishable key belonging to the Supabase project configured in the source. A different backend requires its URL, tables, authentication trigger, and RLS policies to be configured.
+The configured project's publishable key is available from the author
+on request. The deployed demo works without local setup.
 
 ```bash
 npm run dev
