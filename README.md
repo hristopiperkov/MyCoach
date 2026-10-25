@@ -4,7 +4,7 @@ A React single-page application where coaches and clients share fitness posts, d
 
 Educational project for the [SoftUni React course](https://softuni.bg/modules/153/react-septemvri-2026/1555).
 
-**Demo Link:** https://mycoach.mycoach-hub.workers.dev/
+**Demo Link:** https://mycoach.activelife.workers.dev
 
 **Repository:** https://github.com/hristopiperkov/MyCoach
 
