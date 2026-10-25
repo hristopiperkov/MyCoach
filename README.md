@@ -8,9 +8,15 @@ Educational project for the [SoftUni React course](https://softuni.bg/modules/15
 
 **Repository:** https://github.com/hristopiperkov/MyCoach
 
-**Test Accounts:**  (coach) email: uncle.ron@abv.bg password: lightweight
-                    (client) email: joro.ignatov@abv.bg password: asdasdda
-                    (coach) email: yunsunbin@abv.bg password: 12341234
+## Test Accounts
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Coach |  uncle.ron@abv.bg | lightweight  |
+| Coach |  yunsunbin@abv.bg | 12341234  |
+| Client | joro.ignatov@abv.bg | asdasdda |
+
+You can also register a new account.
 
 ## Documentation
 
